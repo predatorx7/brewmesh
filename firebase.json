@@ -1,0 +1,40 @@
+{
+	"hosting": {
+		"public": "public",
+		"ignore": [
+			"firebase.json",
+			"**/.*",
+			"**/node_modules/**"
+		],
+		"rewrites": [
+			{
+				"source": "/api/**",
+				"run": {
+					"serviceId": "brewmesh",
+					"region": "asia-south1"
+				}
+			},
+			{
+				"source": "/mcp",
+				"run": {
+					"serviceId": "brewmesh",
+					"region": "asia-south1"
+				}
+			},
+			{
+				"source": "/healthz",
+				"run": {
+					"serviceId": "brewmesh",
+					"region": "asia-south1"
+				}
+			},
+			{
+				"source": "/openapi.yaml",
+				"run": {
+					"serviceId": "brewmesh",
+					"region": "asia-south1"
+				}
+			}
+		]
+	}
+}
