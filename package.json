@@ -1,0 +1,47 @@
+{
+	"name": "brewmesh",
+	"version": "0.1.0",
+	"description": "BrewMesh — The AI-Powered Connected Cafe Companion (Web UI + WebMCP + MCP Server + Cloud SQL + PGMB + Gemini)",
+	"type": "module",
+	"main": "./src/index.ts",
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"repository": {
+		"url": "https://github.com/predatorx7/brewmesh",
+		"type": "git"
+	},
+	"scripts": {
+		"openapi:typegen": "node ./scripts/openapi-typegen.ts",
+		"openapi:mcpgen": "node ./scripts/mcp-tools-gen.ts",
+		"queries:typegen": "node ./scripts/queries-typegen.ts",
+		"gen": "npm run queries:typegen && npm run openapi:typegen && npm run openapi:mcpgen",
+		"check": "tsc --noEmit",
+		"dev": "node --env-file-if-exists=.env --env-file-if-exists=.env.local ./src/server.ts",
+		"start": "node --env-file-if-exists=.env ./src/server.ts",
+		"start:mcp": "node --env-file-if-exists=.env ./src/mcp-stdio.ts",
+		"test": "node --test tests/*.test.ts"
+	},
+	"dependencies": {
+		"@electric-sql/pglite": "^0.4.0",
+		"@google/genai": "^1.0.0",
+		"@haathie/pgmb": "^0.2.26",
+		"@hapi/boom": "^9.1.4",
+		"@modelcontextprotocol/sdk": "^1.29.0",
+		"@pgtyped/runtime": "^2.4.2",
+		"express": "^5.1.0",
+		"express-openapi-validator": "^5.6.2",
+		"pg": "^8.16.0",
+		"pino": "^9.14.0",
+		"pino-http": "^10.5.0",
+		"yaml": "^2.7.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.0",
+		"@types/node": "^24.0.0",
+		"@types/pg": "^8.15.5",
+		"openapi-typescript": "^7.10.1",
+		"typescript": "^5.8.2"
+	}
+}
