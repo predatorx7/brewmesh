@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none">
+	<defs>
+		<linearGradient id="brewmesh-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#4285F4" />
+			<stop offset="52%" stop-color="#9B72CB" />
+			<stop offset="100%" stop-color="#D96570" />
+		</linearGradient>
+	</defs>
+	<path d="M32 6C32 18.5 41.5 28 54 28C41.5 28 32 37.5 32 50C32 37.5 22.5 28 10 28C22.5 28 32 18.5 32 6Z" fill="url(#brewmesh-grad)" />
+	<path d="M18 52H46C46 55.866 42.866 59 39 59H25C21.134 59 18 55.866 18 52Z" fill="url(#brewmesh-grad)" opacity="0.85" />
+	<text x="66" y="42" fill="#E3E3E3" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.5">BrewMesh</text>
+</svg>

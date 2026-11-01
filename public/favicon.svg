@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+	<defs>
+		<linearGradient id="gemini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#4285F4" />
+			<stop offset="50%" stop-color="#9B72CB" />
+			<stop offset="100%" stop-color="#D96570" />
+		</linearGradient>
+	</defs>
+	<rect width="64" height="64" rx="16" fill="#131314" />
+	<!-- Gemini four-point sparkle combined with a craft coffee cup silhouette -->
+	<path d="M32 8C32 19.5 40.5 28 52 28C40.5 28 32 36.5 32 48C32 36.5 23.5 28 12 28C23.5 28 32 19.5 32 8Z" fill="url(#gemini-grad)" />
+	<circle cx="48" cy="14" r="3" fill="#D96570" />
+	<path d="M20 49H44C44 53.4183 40.4183 57 36 57H28C23.5817 57 20 53.4183 20 49Z" fill="url(#gemini-grad)" opacity="0.85" />
+</svg>

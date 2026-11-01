@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>BrewMesh — AI-Powered Connected Cafe Companion</title>
+	<meta name="description" content="BrewMesh connects cafe guests, Gemini AI ordering, and barista operations with WebMCP and MCP protocols.">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/styles.css">
+</head>
+<body data-mode="home">
+	<!-- Top Sticky Application Header -->
+	<header class="app-header">
+		<div class="header-left">
+			<button class="brand-link" id="btn-brand-home" aria-label="BrewMesh Home">
+				<span class="gemini-sparkle">✦</span>
+				<span class="brand-text">BrewMesh</span>
+			</button>
+			<div class="live-pulse-pill" id="header-pulse-pill" title="Live barista preparation wait time">
+				<span class="status-dot green"></span>
+				<span id="header-pulse-text">Quiet • ~4 min wait • 2 in queue</span>
+			</div>
+			<button class="header-connect-badge" id="btn-header-connect" title="View discoverable guests at tables">
+				<span class="connect-icon">🤝</span>
+				<span id="header-discoverable-count">3</span> discoverable
+			</button>
+		</div>
+
+		<!-- Docked Search Slot in Results Mode -->
+		<div class="header-search-slot" id="header-search-slot">
+			<!-- Omni-search form docks here when in results mode -->
+		</div>
+
+		<div class="header-right">
+			<!-- Wallet Balance Pill & 1-Click Top-Up -->
+			<div class="wallet-pill" id="header-wallet-pill">
+				<span class="currency-symbol">₹</span>
+				<span class="wallet-balance" id="header-wallet-balance">1,450</span>
+				<button class="btn-topup-wallet" id="btn-topup-wallet" title="Add ₹2,000 simulated INR to wallet">+ Add ₹2,000</button>
+			</div>
+
+			<!-- WebMCP Status Pill & Inspector Drawer Trigger -->
+			<button class="webmcp-status-pill" id="btn-toggle-webmcp" title="Inspect and invoke Browser WebMCP tools">
+				<span class="webmcp-bolt">⚡</span>
+				<span>WebMCP ready (<span id="webmcp-count">13</span> tools)</span>
+			</button>
+
+			<!-- Persona & Owner Switcher -->
+			<div class="persona-switch-wrapper">
+				<label for="persona-select" class="visually-hidden">Switch active cafe persona</label>
+				<select id="persona-select" class="persona-select" title="Switch between customer personas and barista portal">
+					<option value="syed">Syed (@syed) • Table 4</option>
+					<option value="ananya">Ananya (@ananya) • Table 2</option>
+					<option value="kabir">Kabir (@kabir) • Table 7</option>
+					<option value="zoya">Zoya (@zoya) • Table 3</option>
+					<option value="vikram">🔐 Vikram (Owner &amp; Barista Portal)</option>
+				</select>
+			</div>
+		</div>
+	</header>
+
+	<!-- Centered Google Search Home Stage (Active in Home Mode) -->
+	<section class="hero-stage" id="hero-stage">
+		<div class="hero-brand">
+			<div class="hero-sparkle-halo">✦</div>
+			<h1 class="hero-title">BrewMesh</h1>
+			<p class="hero-subtitle">Ask anything, match your mood to a brew, customize breakfast, or connect with people in the cafe.</p>
+		</div>
+
+		<!-- Hero Search Container (Source location for Omni-Search Form) -->
+		<div class="hero-search-container" id="hero-search-slot">
+			<form class="omni-search-form" id="omni-search-form" role="search">
+				<div class="omni-search-input-shell">
+					<span class="omni-sparkle-icon" aria-hidden="true">✦</span>
+					<input
+						type="text"
+						id="omni-search-input"
+						class="omni-search-input"
+						placeholder="Search menu, describe your mood/condition, or tell people what you're working on..."
+						autocomplete="off"
+						spellcheck="false"
+						aria-label="BrewMesh Omni-Search and Cafe Companion"
+					>
+					<button type="button" class="btn-search-clear hidden" id="btn-search-clear" aria-label="Clear search input">×</button>
+					<button type="button" class="btn-voice-prompt" id="btn-voice-prompt" title="Fill sample inquiry" aria-label="Example inquiry">🎙️</button>
+					<button type="submit" class="btn-omni-submit" id="btn-omni-submit" aria-label="Submit search to Gemini">
+						<span class="submit-arrow">➔</span>
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Quick Action Chips -->
+		<div class="quick-chips-wrapper" id="quick-chips-wrapper">
+			<button class="quick-chip" data-query="Sleepy &amp; rainy Mumbai afternoon — low-acid coffee + spicy snack">
+				<span>🌧️</span> Sleepy &amp; rainy Mumbai afternoon — low-acid coffee + spicy snack
+			</button>
+			<button class="quick-chip" data-query="Crispy burger &amp; peri-peri chips combo under ₹600">
+				<span>🍔</span> Crispy burger &amp; peri-peri chips combo under ₹600
+			</button>
+			<button class="quick-chip" data-query="I'm working on a material science assignment, ready to meet people">
+				<span>🔬</span> "I'm working on a material science assignment, ready to meet people"
+			</button>
+			<button class="quick-chip" data-query="Who is discoverable at a table right now?">
+				<span>🤝</span> Who is discoverable at a table right now?
+			</button>
+			<button class="quick-chip" data-query="Reorder my usual Cold Brew">
+				<span>🔁</span> Reorder my usual Cold Brew
+			</button>
+		</div>
+
+		<!-- Proactive Table Connect Opt-In Card (Shown on Home when user is not discoverable) -->
+		<article class="hero-table-optin-card" id="hero-table-optin-card">
+			<div class="optin-card-content">
+				<div class="optin-badge">Table Connect</div>
+				<h2 class="optin-title">Hanging out in the cafe?</h2>
+				<p class="optin-body">You are currently hidden on Table Connect. Share what you are working on or thinking about so others can say hi!</p>
+				<form class="optin-inline-form" id="hero-optin-form">
+					<div class="optin-input-group">
+						<label for="hero-table-input" class="optin-label">Table</label>
+						<input type="text" id="hero-table-input" class="optin-text-input" placeholder="Table 4" value="Table 4" required>
+					</div>
+					<div class="optin-input-group flex-grow">
+						<label for="hero-blurb-input" class="optin-label">What are you up to / thinking about?</label>
+						<input type="text" id="hero-blurb-input" class="optin-text-input" placeholder="Working on a material science assignment, open to meet people!">
+					</div>
+					<button type="submit" class="btn-primary optin-btn" id="btn-hero-optin">Become discoverable</button>
+				</form>
+			</div>
+		</article>
+	</section>
+
+	<!-- Google Search Results Navigation Tabs (Directly under docked search bar) -->
+	<nav class="results-nav" id="results-nav" aria-label="Cafe companion views">
+		<div class="nav-tabs-container">
+			<button class="nav-tab active" data-tab="overview">
+				<span class="tab-icon">✦</span> AI Overview &amp; search
+			</button>
+			<button class="nav-tab" data-tab="menu">
+				<span class="tab-icon">☕</span> Full menu &amp; customizer
+			</button>
+			<button class="nav-tab" data-tab="connect">
+				<span class="tab-icon">🤝</span> Table Connect (people)
+			</button>
+			<button class="nav-tab" data-tab="orders">
+				<span class="tab-icon">🧾</span> My orders &amp; usuals
+			</button>
+			<button class="nav-tab" data-tab="vibe">
+				<span class="tab-icon">💬</span> Room vibe check
+			</button>
+			<button class="nav-tab owner-tab" data-tab="owner" id="nav-tab-owner">
+				<span class="tab-icon">🔐</span> Owner &amp; barista portal
+			</button>
+		</div>
+	</nav>
+
+	<!-- Main Two-Column Google Search Results Grid -->
+	<main class="results-main" id="results-main">
+		<!-- Customer View (Left Column 68% + Right Sidebar 32%) -->
+		<div class="results-grid" id="customer-grid">
+			<!-- Primary Results Column -->
+			<section class="primary-column" id="primary-column">
+				<!-- Tab 1: AI Overview & Search -->
+				<div class="tab-content" id="tab-overview" data-view="overview">
+					<!-- WebMCP / Agent Tool Execution Trace Bar -->
+					<div class="tool-trace-bar" id="tool-trace-bar">
+						<div class="trace-header">
+							<span class="trace-badge">⚡ WebMCP Trace</span>
+							<span class="trace-summary" id="trace-summary">Ready for inquiries</span>
+						</div>
+						<div class="trace-chips-list" id="trace-chips-list">
+							<!-- Populated dynamically when tools execute -->
+						</div>
+					</div>
+
+					<!-- Gemini AI Overview Card -->
+					<article class="gemini-overview-card" id="gemini-overview-card">
+						<header class="gemini-card-header">
+							<div class="gemini-logo-badge">
+								<span class="gemini-sparkle-anim">✦</span>
+								<span class="gemini-badge-title">AI Overview</span>
+							</div>
+							<span class="gemini-model-tag">Powered by Gemini 2.5 Flash</span>
+						</header>
+						<div class="gemini-card-body" id="gemini-overview-text">
+							Welcome to BrewMesh! Search the menu, describe what you are feeling, or ask about who is discoverable at tables around you.
+						</div>
+
+						<!-- Proactive Table Connect Nudge in Overview (if user is hidden) -->
+						<div class="overview-table-nudge" id="overview-table-nudge">
+							<span class="nudge-icon">👋</span>
+							<div class="nudge-copy">
+								<strong>Hanging out in the cafe?</strong> You are currently hidden on Table Connect. Share what you are working on or thinking about so others can say hi!
+							</div>
+							<button class="btn-nudge-action" id="btn-overview-nudge">Become discoverable</button>
+						</div>
+					</article>
+
+					<!-- Curated Recommendations Grid -->
+					<div class="search-results-section">
+						<h2 class="section-heading" id="recommendations-heading">Recommended for you</h2>
+						<div class="menu-items-grid" id="recommended-items-grid">
+							<!-- Dynamic recommendation cards -->
+						</div>
+					</div>
+
+					<!-- Matching People Snippets (if people match search intent) -->
+					<div class="search-results-section hidden" id="people-snippets-section">
+						<h2 class="section-heading">Discoverable at tables</h2>
+						<div class="people-snippets-grid" id="people-snippets-grid">
+							<!-- Dynamic people snippets -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 2: Full Menu & Customizer -->
+				<div class="tab-content hidden" id="tab-menu" data-view="menu">
+					<div class="menu-filter-bar">
+						<div class="category-pills">
+							<button class="category-pill active" data-category="All">All items</button>
+							<button class="category-pill" data-category="Coffee">Coffee</button>
+							<button class="category-pill" data-category="Tea &amp; Coolers">Tea &amp; Coolers</button>
+							<button class="category-pill" data-category="Burgers &amp; Sandwiches">Burgers &amp; Sandwiches</button>
+							<button class="category-pill" data-category="Chips &amp; Sides">Chips &amp; Sides</button>
+						</div>
+						<div class="menu-search-filter">
+							<input type="text" id="menu-filter-input" class="menu-filter-input" placeholder="Filter by ingredient or tag...">
+						</div>
+					</div>
+
+					<div class="menu-items-grid" id="full-menu-grid">
+						<!-- Dynamic 14 menu items -->
+					</div>
+				</div>
+
+				<!-- Tab 3: Table Connect (People) -->
+				<div class="tab-content hidden" id="tab-connect" data-view="connect">
+					<!-- Table Connect Control Bar -->
+					<article class="connect-control-card">
+						<div class="control-header">
+							<div class="control-status">
+								<span class="status-indicator-dot" id="connect-status-dot"></span>
+								<span class="control-status-label" id="connect-status-label">You are currently discoverable</span>
+							</div>
+							<label class="toggle-switch">
+								<input type="checkbox" id="connect-discoverable-toggle" checked>
+								<span class="toggle-slider"></span>
+							</label>
+						</div>
+						<form class="connect-settings-form" id="connect-settings-form">
+							<div class="connect-input-row">
+								<div class="connect-field-group">
+									<label for="connect-table-input" class="field-label">Your table / seat</label>
+									<input type="text" id="connect-table-input" class="field-input" placeholder="Table 4" value="Table 4">
+								</div>
+								<div class="connect-field-group flex-grow">
+									<label for="connect-blurb-input" class="field-label">What are you doing, working on, or thinking about?</label>
+									<input type="text" id="connect-blurb-input" class="field-input" placeholder="Working on a material science assignment, open to meet people!">
+								</div>
+								<button type="submit" class="btn-primary" id="btn-save-connect-settings">Update presence</button>
+							</div>
+						</form>
+					</article>
+
+					<!-- Philosophy Banner -->
+					<aside class="philosophy-banner">
+						<span class="philosophy-icon">💡</span>
+						<p class="philosophy-text">
+							<strong>The BrewMesh connection philosophy:</strong> We don't match people by identical coffee orders—different drinks are a great excuse to trade flavor notes! Connect over what you are working on, thinking about, or curious to try.
+						</p>
+					</aside>
+
+					<!-- Discoverable People Cards Grid -->
+					<div class="people-cards-grid" id="people-cards-grid">
+						<!-- Dynamic people cards -->
+					</div>
+				</div>
+
+				<!-- Tab 4: My Orders & Usuals -->
+				<div class="tab-content hidden" id="tab-orders" data-view="orders">
+					<!-- Active Order Live Tracker -->
+					<article class="active-order-tracker-card" id="active-order-tracker-card">
+						<header class="tracker-header">
+							<div class="tracker-title-group">
+								<span class="tracker-badge">Active kitchen order</span>
+								<h2 class="tracker-order-id" id="tracker-order-id">Order #104</h2>
+							</div>
+							<span class="order-channel-badge" id="tracker-channel-badge">👤 Ordered via Web</span>
+						</header>
+
+						<div class="tracker-progress-bar">
+							<div class="progress-step completed" id="step-pending">
+								<div class="step-circle">1</div>
+								<span class="step-label">Received</span>
+							</div>
+							<div class="progress-line" id="line-1"></div>
+							<div class="progress-step active" id="step-preparing">
+								<div class="step-circle">2</div>
+								<span class="step-label">Preparing</span>
+							</div>
+							<div class="progress-line" id="line-2"></div>
+							<div class="progress-step" id="step-ready">
+								<div class="step-circle">3</div>
+								<span class="step-label">Ready</span>
+							</div>
+							<div class="progress-line" id="line-3"></div>
+							<div class="progress-step" id="step-completed">
+								<div class="step-circle">4</div>
+								<span class="step-label">Completed</span>
+							</div>
+						</div>
+
+						<div class="tracker-meta">
+							<span class="tracker-wait" id="tracker-wait-text">⏳ Estimated prep time: ~4 minutes</span>
+							<span class="tracker-table" id="tracker-table-text">Delivering to: Table 4</span>
+						</div>
+
+						<div class="tracker-items-list" id="tracker-items-list">
+							<!-- Itemized active items -->
+						</div>
+					</article>
+
+					<!-- My Usuals Section -->
+					<div class="orders-section">
+						<h2 class="section-heading">My usuals</h2>
+						<div class="usuals-grid" id="usuals-grid">
+							<!-- 1-click reorder usual items -->
+						</div>
+					</div>
+
+					<!-- Past Order History -->
+					<div class="orders-section">
+						<h2 class="section-heading">Past orders</h2>
+						<div class="order-history-list" id="order-history-list">
+							<!-- Past orders timeline -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 5: Room Vibe Check -->
+				<div class="tab-content hidden" id="tab-vibe" data-view="vibe">
+					<article class="vibe-submit-card">
+						<h2 class="vibe-card-title">Understand the room</h2>
+						<p class="vibe-card-subtitle">How is the cafe atmosphere right now? Help the team keep the space comfortable.</p>
+
+						<form class="vibe-form" id="vibe-form">
+							<div class="vibe-sentiment-selector">
+								<label class="vibe-sentiment-pill">
+									<input type="radio" name="vibe-sentiment" value="Amazing" checked>
+									<span>✨ Amazing</span>
+								</label>
+								<label class="vibe-sentiment-pill">
+									<input type="radio" name="vibe-sentiment" value="Cozy">
+									<span>☕ Cozy</span>
+								</label>
+								<label class="vibe-sentiment-pill">
+									<input type="radio" name="vibe-sentiment" value="Productive">
+									<span>💻 Productive</span>
+								</label>
+								<label class="vibe-sentiment-pill">
+									<input type="radio" name="vibe-sentiment" value="Too Cold">
+									<span>❄️ Too cold</span>
+								</label>
+								<label class="vibe-sentiment-pill">
+									<input type="radio" name="vibe-sentiment" value="Noisy">
+									<span>🔊 Noisy</span>
+								</label>
+							</div>
+
+							<div class="vibe-input-wrapper">
+								<label for="vibe-comment-input" class="visually-hidden">Room comment</label>
+								<input type="text" id="vibe-comment-input" class="vibe-comment-input" placeholder="For example: AC near window is chilly, playlist is 10/10!">
+								<button type="submit" class="btn-primary" id="btn-submit-vibe">Share room vibe</button>
+							</div>
+						</form>
+					</article>
+
+					<div class="vibes-feed-section">
+						<h2 class="section-heading">Live community vibes</h2>
+						<div class="vibes-feed-list" id="vibes-feed-list">
+							<!-- Dynamic vibes stream -->
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Right-Hand Google Knowledge Panel Sidebar -->
+			<aside class="knowledge-sidebar" id="knowledge-sidebar">
+				<!-- Card 1: Your BrewMesh Wallet & Profile -->
+				<article class="knowledge-card profile-card">
+					<header class="card-header">
+						<div class="profile-header-meta">
+							<span class="profile-avatar" id="sidebar-user-avatar">☕</span>
+							<div>
+								<h3 class="card-title" id="sidebar-user-name">Syed</h3>
+								<span class="user-handle" id="sidebar-user-handle">@syed</span>
+							</div>
+						</div>
+						<span class="discoverable-pill" id="sidebar-discoverable-pill">Hidden</span>
+					</header>
+
+					<div class="profile-balance-box">
+						<div class="balance-meta">
+							<span class="balance-label">Digital INR wallet</span>
+							<span class="balance-number" id="sidebar-wallet-number">₹1,450</span>
+						</div>
+						<button class="btn-primary btn-sm" id="btn-sidebar-topup">+ Add ₹2,000</button>
+					</div>
+
+					<div class="profile-details-list">
+						<div class="detail-row">
+							<span class="detail-label">Current table</span>
+							<span class="detail-value" id="sidebar-table-label">Table 4</span>
+						</div>
+						<div class="detail-row">
+							<span class="detail-label">Currently sipping</span>
+							<span class="detail-value highlight" id="sidebar-sipping-drink">Mumbai Cutting Cold Brew</span>
+						</div>
+					</div>
+				</article>
+
+				<!-- Card 2: Live Cafe Wait & Queue Pulse -->
+				<article class="knowledge-card queue-card">
+					<header class="card-header">
+						<h3 class="card-title">Cafe wait &amp; queue pulse</h3>
+						<span class="live-dot-pulse">● LIVE</span>
+					</header>
+
+					<div class="queue-metric-row">
+						<div class="queue-stat">
+							<span class="stat-number" id="sidebar-queue-wait">~4m</span>
+							<span class="stat-label">Barista prep time</span>
+						</div>
+						<div class="queue-stat">
+							<span class="stat-number" id="sidebar-queue-orders">2</span>
+							<span class="stat-label">Active kitchen tickets</span>
+						</div>
+						<div class="queue-stat">
+							<span class="stat-number" id="sidebar-queue-people">3</span>
+							<span class="stat-label">People at tables</span>
+						</div>
+					</div>
+
+					<p class="queue-note">Estimates update dynamically via PostgreSQL table mutation events.</p>
+				</article>
+
+				<!-- Card 3: Incoming Table Waves -->
+				<article class="knowledge-card waves-card">
+					<header class="card-header">
+						<h3 class="card-title">Incoming table waves</h3>
+						<span class="wave-count-badge" id="sidebar-wave-count">1 wave</span>
+					</header>
+
+					<div class="incoming-waves-list" id="sidebar-waves-list">
+						<!-- Dynamic table waves -->
+					</div>
+				</article>
+			</aside>
+		</div>
+
+		<!-- Owner & Barista Operational Portal View (Full-Width Command Center) -->
+		<section class="owner-portal-view hidden" id="owner-portal-view">
+			<header class="owner-portal-header">
+				<div class="owner-header-title">
+					<span class="portal-badge">🔐 Owner &amp; Barista Operations</span>
+					<h1 class="owner-main-title">BrewMesh Command Center</h1>
+					<p class="owner-subtitle">Live Kitchen Order Queue, Agent vs. Human Analytics, and Inventory Restocking.</p>
+				</div>
+				<div class="owner-quick-actions">
+					<button class="btn-secondary" id="btn-refresh-owner-data">↻ Refresh data</button>
+					<button class="btn-primary" id="btn-simulate-order">+ Simulate incoming order</button>
+				</div>
+			</header>
+
+			<!-- 1. Live Kitchen Order Queue (KOT) -->
+			<section class="kot-section">
+				<div class="kot-section-header">
+					<h2 class="kot-heading">🔥 Live kitchen order queue (KOT)</h2>
+					<span class="kot-count-tag" id="kot-active-count">2 active orders</span>
+				</div>
+				<div class="kot-columns-grid">
+					<!-- Pending Column -->
+					<div class="kot-lane">
+						<header class="lane-header pending">
+							<span class="lane-title">Pending</span>
+							<span class="lane-count" id="count-pending">1</span>
+						</header>
+						<div class="kot-cards-list" id="lane-pending-list">
+							<!-- Pending order cards -->
+						</div>
+					</div>
+
+					<!-- Preparing Column -->
+					<div class="kot-lane">
+						<header class="lane-header preparing">
+							<span class="lane-title">Preparing</span>
+							<span class="lane-count" id="count-preparing">1</span>
+						</header>
+						<div class="kot-cards-list" id="lane-preparing-list">
+							<!-- Preparing order cards -->
+						</div>
+					</div>
+
+					<!-- Ready for Pickup Column -->
+					<div class="kot-lane">
+						<header class="lane-header ready">
+							<span class="lane-title">Ready for pickup</span>
+							<span class="lane-count" id="count-ready">0</span>
+						</header>
+						<div class="kot-cards-list" id="lane-ready-list">
+							<!-- Ready order cards -->
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- 2. Owner AI Analytics & "Understand the Room" Pulse -->
+			<section class="owner-analytics-section">
+				<div class="analytics-kpi-row">
+					<article class="kpi-card">
+						<span class="kpi-label">Total revenue (today)</span>
+						<span class="kpi-value" id="kpi-revenue">₹14,820</span>
+						<span class="kpi-trend positive">↑ 18% vs yesterday</span>
+					</article>
+					<article class="kpi-card">
+						<span class="kpi-label">Total orders placed</span>
+						<span class="kpi-value" id="kpi-orders-count">48</span>
+						<span class="kpi-trend neutral">Avg ₹308 / ticket</span>
+					</article>
+					<article class="kpi-card">
+						<span class="kpi-label">Agent vs. human split</span>
+						<span class="kpi-value" id="kpi-agent-split">58% Agent</span>
+						<span class="kpi-subtext">28 WebMCP / 20 Web UI</span>
+					</article>
+					<article class="kpi-card">
+						<span class="kpi-label">Low stock items</span>
+						<span class="kpi-value warning" id="kpi-low-stock">2 items</span>
+						<span class="kpi-subtext">Oat milk, Brioche buns</span>
+					</article>
+				</div>
+
+				<!-- Gemini "Understand the Room" & Action Items -->
+				<article class="owner-gemini-card">
+					<header class="gemini-card-header">
+						<div class="gemini-logo-badge">
+							<span class="gemini-sparkle-anim">✦</span>
+							<span class="gemini-badge-title">Gemini "Understand the Room" Pulse</span>
+						</div>
+						<span class="gemini-model-tag">Live sentiment analysis</span>
+					</header>
+
+					<div class="owner-sentiment-split">
+						<div class="sentiment-gauge-box">
+							<div class="sentiment-score-circle" id="owner-sentiment-score">92%</div>
+							<span class="sentiment-score-label">Positive cafe vibe</span>
+						</div>
+						<div class="sentiment-summary-box">
+							<h3 class="sentiment-summary-title">Room mood summary</h3>
+							<p class="sentiment-summary-text" id="owner-sentiment-summary">
+								Guests report a productive and comfortable vibe with enthusiastic praise for the cold brew and indie playlist. Two guests mentioned cold airflow near table 4.
+							</p>
+						</div>
+					</div>
+
+					<div class="owner-action-items">
+						<h3 class="action-items-title">Concrete action items for cafe team</h3>
+						<ul class="action-items-list" id="owner-action-items-list">
+							<li><span class="action-bullet">🌡️</span> Increase AC temperature setting by 1.5°C near window tables (Tables 3 and 4).</li>
+							<li><span class="action-bullet">🥛</span> Restock oat milk cartons before the 4:00 PM afternoon rush.</li>
+							<li><span class="action-bullet">🎵</span> Keep the current lo-fi acoustic playlist rolling through early evening.</li>
+						</ul>
+					</div>
+
+					<!-- Owner Natural Language Analytics Query Form -->
+					<form class="owner-ai-query-form" id="owner-ai-query-form">
+						<label for="owner-ai-query-input" class="query-form-label">Ask Gemini any business, stock, or sentiment question:</label>
+						<div class="query-input-shell">
+							<input
+								type="text"
+								id="owner-ai-query-input"
+								class="query-text-input"
+								placeholder="Which burger or coffee customization sells best and what needs restocking?"
+								value="Which burger or coffee customization sells best and what needs restocking?"
+							>
+							<button type="submit" class="btn-primary" id="btn-submit-owner-query">Ask Gemini</button>
+						</div>
+						<div class="owner-query-response hidden" id="owner-query-response">
+							<!-- Dynamic Gemini analytics response -->
+						</div>
+					</form>
+				</article>
+			</section>
+
+			<!-- 3. Live Inventory & Stock Manager -->
+			<section class="inventory-section">
+				<div class="inventory-header">
+					<h2 class="section-heading">📦 Live inventory &amp; stock manager</h2>
+					<span class="inventory-subtitle">14 items across Coffee, Tea, Burgers, and Chips</span>
+				</div>
+				<div class="inventory-table-wrapper">
+					<table class="inventory-table">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Category</th>
+								<th>Price</th>
+								<th>Units in stock</th>
+								<th>Status</th>
+								<th>Quick restock controls</th>
+							</tr>
+						</thead>
+						<tbody id="inventory-table-body">
+							<!-- Dynamic inventory rows -->
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</section>
+	</main>
+
+	<!-- Slide-Out WebMCP Inspector / Agent Console Drawer -->
+	<aside class="webmcp-drawer hidden" id="webmcp-drawer" aria-label="WebMCP inspector drawer">
+		<header class="drawer-header">
+			<div class="drawer-title-group">
+				<span class="drawer-bolt">⚡</span>
+				<h2 class="drawer-title">WebMCP Agent Inspector</h2>
+			</div>
+			<button class="drawer-close-btn" id="btn-close-drawer" aria-label="Close WebMCP inspector">×</button>
+		</header>
+
+		<div class="drawer-body">
+			<div class="drawer-status-card">
+				<div class="status-indicator-row">
+					<span class="status-dot green"></span>
+					<span class="status-text"><strong>Active WebMCP client</strong> (`window.navigator.modelContext`)</span>
+				</div>
+				<p class="drawer-desc">
+					All 13 BrewMesh tools are registered on the browser model context and can be invoked directly by Chrome AI agents or manually tested below.
+				</p>
+			</div>
+
+			<!-- Interactive Tool Invoker -->
+			<div class="tool-invoker-section">
+				<h3 class="tool-invoker-title">Run WebMCP tool</h3>
+				<form id="webmcp-invoke-form">
+					<div class="form-field">
+						<label for="webmcp-tool-select" class="field-label">Select tool</label>
+						<select id="webmcp-tool-select" class="field-select">
+							<!-- Populated dynamically with all 13 tools -->
+						</select>
+					</div>
+
+					<div class="form-field">
+						<label for="webmcp-tool-args" class="field-label">Arguments (JSON)</label>
+						<textarea id="webmcp-tool-args" class="field-textarea" rows="4" spellcheck="false"></textarea>
+					</div>
+
+					<button type="submit" class="btn-primary btn-block" id="btn-invoke-webmcp">Execute tool</button>
+				</form>
+
+				<div class="invoker-output-wrapper hidden" id="invoker-output-wrapper">
+					<label class="field-label">Result</label>
+					<pre class="invoker-output" id="invoker-output"></pre>
+				</div>
+			</div>
+
+			<!-- Registered Tools List -->
+			<div class="tools-catalogue-section">
+				<h3 class="catalogue-title">Registered WebMCP tools (13)</h3>
+				<div class="tools-accordion" id="tools-accordion">
+					<!-- Populated dynamically -->
+				</div>
+			</div>
+		</div>
+	</aside>
+
+	<!-- Item Customization Dialog (<dialog id="customizer-dialog">) -->
+	<dialog id="customizer-dialog" class="customizer-dialog" aria-labelledby="customizer-item-title">
+		<div class="dialog-shell">
+			<header class="dialog-header">
+				<div class="dialog-header-meta">
+					<span class="dialog-category-badge" id="customizer-category-badge">Coffee</span>
+					<h2 class="dialog-title" id="customizer-item-title">Mumbai Cutting Cold Brew</h2>
+					<span class="dialog-base-price" id="customizer-base-price">Base price: ₹220</span>
+				</div>
+				<button type="button" class="dialog-close-btn" id="btn-close-customizer" aria-label="Close customization dialog">×</button>
+			</header>
+
+			<form class="customizer-form" id="customizer-form" method="dialog">
+				<div class="dialog-scroll-body" id="customizer-groups-container">
+					<!-- Customization groups rendered dynamically -->
+				</div>
+
+				<div class="customizer-quantity-row">
+					<span class="quantity-label">Quantity</span>
+					<div class="quantity-stepper">
+						<button type="button" class="btn-step" id="btn-qty-minus" aria-label="Decrease quantity">−</button>
+						<span class="quantity-value" id="customizer-qty">1</span>
+						<button type="button" class="btn-step" id="btn-qty-plus" aria-label="Increase quantity">+</button>
+					</div>
+				</div>
+
+				<div class="customizer-notes-row">
+					<label for="customizer-kitchen-note" class="field-label">Kitchen note (optional)</label>
+					<input type="text" id="customizer-kitchen-note" class="field-input" placeholder="For example: Extra ice or no straw">
+				</div>
+
+				<footer class="dialog-footer">
+					<button type="submit" class="btn-primary btn-submit-order" id="btn-submit-order">
+						Place order • ₹220
+					</button>
+				</footer>
+			</form>
+		</div>
+	</dialog>
+
+	<!-- Toast Notification Container -->
+	<div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+	<!-- App Scripts -->
+	<script type="module" src="/app.js"></script>
+</body>
+</html>
