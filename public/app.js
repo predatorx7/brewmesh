@@ -630,19 +630,192 @@ const state = {
 	customizerTargetItem: null,
 	customizerQuantity: 1,
 	customizerSelections: {},
-	webmcpTraceLogs: []
+	webmcpTraceLogs: [],
+	gameFilter: 'ALL',
+	tableGames: [
+		{
+			id: 'g-catan',
+			title: 'Catan',
+			category: 'Strategy',
+			source: 'CAFE_SHELF',
+			hostUserId: null,
+			hostName: 'Cafe Shelf (Table 4)',
+			tableNumber: 4,
+			minPlayers: 3,
+			maxPlayers: 4,
+			currentPlayers: 2,
+			lookingForPlayers: true,
+			note: 'Picked from the cafe shelf at Table 4. Looking for 1 or 2 more players for a relaxed 45-minute game!'
+		},
+		{
+			id: 'g-ttr',
+			title: 'Ticket to Ride: India',
+			category: 'Strategy',
+			source: 'CAFE_SHELF',
+			hostUserId: null,
+			hostName: 'Cafe Shelf (Table 8)',
+			tableNumber: 8,
+			minPlayers: 2,
+			maxPlayers: 5,
+			currentPlayers: 3,
+			lookingForPlayers: true,
+			note: 'Indian Railways map set up at Table 8 — happy to teach the rules in 3 minutes over coffee.'
+		},
+		{
+			id: 'g-codenames',
+			title: 'Codenames',
+			category: 'Word & Party',
+			source: 'CAFE_SHELF',
+			hostUserId: 'zoya',
+			hostName: 'Zoya Merchant',
+			tableNumber: 6,
+			minPlayers: 4,
+			maxPlayers: 8,
+			currentPlayers: 5,
+			lookingForPlayers: true,
+			note: 'Zoya grabbed Codenames from the cafe shelf! Spies and spymasters welcome at Booth 6.'
+		},
+		{
+			id: 'g-azul',
+			title: 'Azul',
+			category: 'Tile Placement',
+			source: 'GUEST_BROUGHT',
+			hostUserId: 'ananya',
+			hostName: 'Ananya Rao',
+			tableNumber: 2,
+			minPlayers: 2,
+			maxPlayers: 4,
+			currentPlayers: 3,
+			lookingForPlayers: true,
+			note: 'Brought Azul from home — 1 seat open at Window Seat 2 if you enjoy pattern games and iced coffee.'
+		},
+		{
+			id: 'g-wingspan',
+			title: 'Wingspan',
+			category: 'Engine Building',
+			source: 'GUEST_BROUGHT',
+			hostUserId: 'kabir',
+			hostName: 'Kabir Mehta',
+			tableNumber: 7,
+			minPlayers: 1,
+			maxPlayers: 5,
+			currentPlayers: 2,
+			lookingForPlayers: true,
+			note: 'Brought Wingspan with the Oceania expansion! Relaxed round starting in 5 minutes at Table 7.'
+		},
+		{
+			id: 'g-splendor',
+			title: 'Splendor',
+			category: 'Strategy',
+			source: 'CAFE_SHELF',
+			hostUserId: null,
+			hostName: 'Available on Cafe Shelf',
+			tableNumber: 2,
+			minPlayers: 2,
+			maxPlayers: 4,
+			currentPlayers: 0,
+			lookingForPlayers: false,
+			note: 'Available on the cafe games shelf by the espresso bar — grab it for your table anytime.'
+		}
+	],
+	nearbyCafes: [
+		{
+			id: 'c-bandra',
+			name: 'BrewMesh Bandra West (Here)',
+			neighborhood: 'Bandra West',
+			address: '14 Chapel Road, Ranwar Village, Bandra West',
+			distanceKm: 0.0,
+			walkOrDriveMins: 1,
+			vibeMode: 'Quiet & focused',
+			waitMins: 4,
+			openToChatCount: 5,
+			activeGameTables: 3,
+			availableGames: ['Catan', 'Ticket to Ride: India', 'Splendor', 'Azul', 'Codenames', 'Wingspan'],
+			signatureItems: ['Mumbai Cutting Cold Brew', 'Bombay Brioche Burger', 'Cardamom Cortado'],
+			featuredBlurb: 'Your current cafe! Fresh single-origin pour-overs, 3 active board-game tables, and 5 guests open to chat.'
+		},
+		{
+			id: 'c-subko',
+			name: 'Subko Craft Bakehouse & Roastery',
+			neighborhood: 'Bandra West',
+			address: 'Perry Cross Road, Bandra West',
+			distanceKm: 0.8,
+			walkOrDriveMins: 10,
+			vibeMode: 'Lively social buzz',
+			waitMins: 8,
+			openToChatCount: 8,
+			activeGameTables: 2,
+			availableGames: ['Chess', 'Scrabble', 'Hive'],
+			signatureItems: ['Podanur Estate Espresso', 'Sourdough Croissant', 'Cascara Tonic'],
+			featuredBlurb: 'Garden courtyard in a vintage Bandra cottage with sourdough bakes, chess tables, and 8 people open to meet.'
+		},
+		{
+			id: 'c-bluetokai',
+			name: 'Blue Tokai Roastery — Pali Hill',
+			neighborhood: 'Pali Hill, Bandra',
+			address: 'Pali Mala Road, Pali Hill',
+			distanceKm: 1.2,
+			walkOrDriveMins: 14,
+			vibeMode: 'Quiet & focused',
+			waitMins: 5,
+			openToChatCount: 3,
+			activeGameTables: 1,
+			availableGames: ['Backgammon', 'Monopoly Deal', 'Chess'],
+			signatureItems: ['Pour-Over', 'Cold Brew', 'Sourdough Toast'],
+			featuredBlurb: 'Tree-lined sunlit nook ideal for quiet reading, pour-over flights, and a quick afternoon game.'
+		},
+		{
+			id: 'c-bch',
+			name: 'Bombay Coffee House — Khar',
+			neighborhood: 'Khar West',
+			address: '14th Road, Khar West',
+			distanceKm: 2.1,
+			walkOrDriveMins: 12,
+			vibeMode: 'Cozy rainy-day nook',
+			waitMins: 6,
+			openToChatCount: 4,
+			activeGameTables: 2,
+			availableGames: ['Catan', 'Carcassonne', 'Jenga', 'Azul'],
+			signatureItems: ['Filter Kaapi', 'Brioche Burger', 'Matcha Latte'],
+			featuredBlurb: 'Plush armchairs, warm lamps, and evening Catan & Azul sessions just 12 minutes away.'
+		},
+		{
+			id: 'c-kgc',
+			name: 'Kala Ghoda Courtyard Cafe',
+			neighborhood: 'Fort / Kala Ghoda',
+			address: '10 Ropewalk Lane, Kala Ghoda',
+			distanceKm: 14.5,
+			walkOrDriveMins: 32,
+			vibeMode: 'Creative buzz',
+			waitMins: 7,
+			openToChatCount: 6,
+			activeGameTables: 3,
+			availableGames: ['Catan', 'Wingspan', 'Chess', 'Scrabble'],
+			signatureItems: ['Cold Brew', 'Almond Cake', 'Matcha Latte'],
+			featuredBlurb: 'Heritage arts district cafe with weekend board-game tables and designers open to chat.'
+		}
+	]
 }
 
 // ============================================================================
-// 2. WebMCP Client Implementation (window.navigator.modelContext)
+// 2. WebMCP Client Implementation (window.navigator.modelContext & document.modelContext)
 // ============================================================================
 
 class WebModelContextManager {
 	#tools = new Map()
+	#nativeNavigatorCtx = null
+	#nativeDocumentCtx = null
 
 	constructor() {
-		// Standards compliance: install on window.navigator if not provided by browser
-		if (!('modelContext' in window.navigator)) {
+		if (typeof window !== 'undefined' && 'modelContext' in window.navigator && window.navigator.modelContext) {
+			this.#nativeNavigatorCtx = window.navigator.modelContext
+		}
+		if (typeof document !== 'undefined' && 'modelContext' in document && document.modelContext) {
+			this.#nativeDocumentCtx = document.modelContext
+		}
+
+		// Install fallback on window.navigator only if the browser does not provide native WebMCP
+		if (typeof window !== 'undefined' && !('modelContext' in window.navigator)) {
 			window.navigator.modelContext = {
 				registerTool: (toolDef) => this.registerTool(toolDef),
 				provideContext: (ctx) => this.provideContext(ctx),
@@ -652,15 +825,50 @@ class WebModelContextManager {
 		}
 	}
 
-	registerTool(toolDef) {
-		this.#tools.set(toolDef.name, toolDef)
+	async registerTool(toolDef) {
+		const executableTool = {
+			...toolDef,
+			description: toolDef.description || toolDef.summary || toolDef.name,
+			inputSchema: toolDef.inputSchema || { type: 'object', properties: {} },
+			execute: toolDef.execute || (async (input = {}) => {
+				const result = await this.callTool(toolDef.name, input)
+				return result
+			})
+		}
+		this.#tools.set(toolDef.name, executableTool)
 		this.#updateUiToolCount()
+
+		// Also register with Chrome's native WebMCP (navigator.modelContext & document.modelContext)
+		// so Chrome DevTools > Application > WebMCP detects every tool immediately!
+		for (const nativeCtx of [this.#nativeNavigatorCtx, this.#nativeDocumentCtx]) {
+			if (nativeCtx && typeof nativeCtx.registerTool === 'function') {
+				try {
+					await nativeCtx.registerTool({
+						name: executableTool.name,
+						description: executableTool.description,
+						inputSchema: executableTool.inputSchema,
+						execute: executableTool.execute
+					})
+				} catch {
+					// Ignore if already registered on the same context
+				}
+			}
+		}
 	}
 
 	provideContext(ctx) {
 		if (Array.isArray(ctx?.tools)) {
 			for (const tool of ctx.tools) {
 				this.registerTool(tool)
+			}
+		}
+		for (const nativeCtx of [this.#nativeNavigatorCtx, this.#nativeDocumentCtx]) {
+			if (nativeCtx && typeof nativeCtx.provideContext === 'function' && typeof nativeCtx.registerTool !== 'function') {
+				try {
+					nativeCtx.provideContext({ tools: Array.from(this.#tools.values()) })
+				} catch {
+					// Ignore native provideContext error
+				}
 			}
 		}
 	}
@@ -933,11 +1141,69 @@ async function initializeWebMcpTools() {
 				required: ['question'],
 				additionalProperties: false
 			}
+		},
+		{
+			name: 'list_games',
+			operationId: 'ListGames',
+			method: 'get',
+			path: '/api/games',
+			summary: 'List board games available on the cafe shelf or brought by guests',
+			description: 'List active board and tabletop games in the cafe, filtered by source (CAFE_SHELF or GUEST_BROUGHT) and open seats.',
+			inputSchema: {
+				type: 'object',
+				properties: {
+					source: { type: 'string', enum: ['CAFE_SHELF', 'GUEST_BROUGHT'] },
+					onlyLookingForPlayers: { type: 'boolean', default: false }
+				},
+				additionalProperties: false
+			}
+		},
+		{
+			name: 'create_or_join_game',
+			operationId: 'CreateOrJoinGame',
+			method: 'post',
+			path: '/api/games',
+			summary: 'Host a board game at your table or join an existing game',
+			description: 'Create a new board game table session (from the cafe shelf or brought from home) or join an existing table looking for players.',
+			inputSchema: {
+				type: 'object',
+				properties: {
+					action: { type: 'string', enum: ['HOST', 'JOIN'], default: 'HOST' },
+					gameId: { type: 'string' },
+					userId: { type: 'string', default: 'syed' },
+					title: { type: 'string' },
+					category: { type: 'string', default: 'Strategy' },
+					source: { type: 'string', enum: ['CAFE_SHELF', 'GUEST_BROUGHT'], default: 'GUEST_BROUGHT' },
+					tableNumber: { type: 'integer', default: 4 },
+					maxPlayers: { type: 'integer', default: 4 },
+					note: { type: 'string' }
+				},
+				required: ['userId'],
+				additionalProperties: false
+			}
+		},
+		{
+			name: 'find_nearby_cafes',
+			operationId: 'FindNearbyCafes',
+			method: 'get',
+			path: '/api/cafes/nearby',
+			summary: 'Find nearest specialty cafes by board games, food/drink cravings, or people open to chat',
+			description: 'Find nearby specialty cafes across Mumbai filtered by available board games, signature food/drink cravings, or open-to-chat guests.',
+			inputSchema: {
+				type: 'object',
+				properties: {
+					search: { type: 'string' },
+					game: { type: 'string' },
+					craving: { type: 'string' },
+					minChatPartners: { type: 'integer' }
+				},
+				additionalProperties: false
+			}
 		}
 	]
 
 	for (const tool of toolsToRegister) {
-		webMcpManager.registerTool(tool)
+		await webMcpManager.registerTool(tool)
 	}
 
 	renderWebMcpDrawerCatalogue()
@@ -1152,9 +1418,92 @@ async function executeToolAction(name, args) {
 			}
 			return { answer }
 		}
+		case 'list_games': {
+			let games = [...state.tableGames]
+			if (args.source) {
+				games = games.filter(g => g.source === args.source)
+			}
+			if (args.onlyLookingForPlayers) {
+				games = games.filter(g => g.lookingForPlayers)
+			}
+			return { games }
+		}
+		case 'create_or_join_game': {
+			const action = String(args.action || 'HOST').toUpperCase()
+			if (action === 'JOIN' && args.gameId) {
+				const game = state.tableGames.find(g => String(g.id) === String(args.gameId))
+				if (!game) throw new Error('Selected game session was not found.')
+				game.currentPlayers = Math.min(game.maxPlayers, game.currentPlayers + 1)
+				if (game.currentPlayers >= game.maxPlayers) {
+					game.lookingForPlayers = false
+				}
+				renderGamesGrid(state.gameFilter, false)
+				showToast(`Joined ${game.title} at Table ${game.tableNumber || 4}!`, 'toast-success')
+				return { game }
+			}
+			const newGame = {
+				id: `g-${Date.now()}`,
+				title: args.title || 'Catan',
+				category: args.category || 'Strategy',
+				source: args.source || 'GUEST_BROUGHT',
+				hostUserId: state.currentUser.id,
+				hostName: state.currentUser.name,
+				tableNumber: Number(String(args.tableNumber || '4').replace(/\D/g, '')) || 4,
+				minPlayers: 2,
+				maxPlayers: Number(args.maxPlayers) || 4,
+				currentPlayers: 1,
+				lookingForPlayers: true,
+				note: args.note || 'Open for a friendly round at our table — come say hi!'
+			}
+			state.tableGames.unshift(newGame)
+			renderGamesGrid(state.gameFilter, false)
+			showToast(`Listed "${newGame.title}" at Table ${newGame.tableNumber}!`, 'toast-success')
+			return { game: newGame }
+		}
+		case 'find_nearby_cafes': {
+			let cafes = [...state.nearbyCafes]
+			if (args.search) {
+				const q = args.search.toLowerCase()
+				cafes = cafes.filter(c =>
+					c.name.toLowerCase().includes(q) ||
+					c.neighborhood.toLowerCase().includes(q) ||
+					c.availableGames.some(g => g.toLowerCase().includes(q)) ||
+					c.signatureItems.some(s => s.toLowerCase().includes(q))
+				)
+			}
+			if (args.game) {
+				const g = args.game.toLowerCase()
+				cafes = cafes.filter(c => c.availableGames.some(item => item.toLowerCase().includes(g)))
+			}
+			if (args.craving) {
+				const cr = args.craving.toLowerCase()
+				cafes = cafes.filter(c => c.signatureItems.some(item => item.toLowerCase().includes(cr)))
+			}
+			if (args.minChatPartners) {
+				cafes = cafes.filter(c => c.openToChatCount >= Number(args.minChatPartners))
+			}
+			return {
+				cafes,
+				summary: `Showing ${cafes.length} specialty cafe${cafes.length === 1 ? '' : 's'} nearby`
+			}
+		}
 		default:
 			throw new Error(`Unknown WebMCP tool: ${name}`)
 	}
+}
+
+// Render 420ms Graceful Skeleton Shimmers
+export function renderShimmerCards(container, count = 4) {
+	if (!container) return
+	container.innerHTML = Array.from({ length: count }).map(() => `
+		<div class="shimmer-card" aria-hidden="true">
+			<div class="shimmer-badge"></div>
+			<div class="shimmer-title"></div>
+			<div class="shimmer-line"></div>
+			<div class="shimmer-line short"></div>
+			<div class="shimmer-footer"></div>
+		</div>
+	`).join('')
 }
 
 // Log WebMCP Tool Executions to the Trace Bar
@@ -1183,15 +1532,15 @@ function logWebMcpExecution(toolName, args) {
 }
 
 // ============================================================================
-// 4. Omni-Search & Conversational Gemini AI Engine
+// 4. Omni-Search & Conversational Cafe Companion Engine (With 420ms Shimmer)
 // ============================================================================
 
-export function handleOmniSearch(query) {
+export async function handleOmniSearch(query) {
 	if (!query || !query.trim()) return
 
-	// Switch layout to Results mode
+	// Switch layout to Results mode and Menu tab
 	setAppMode('results')
-	switchTab('overview')
+	switchTab('menu', false)
 
 	// Update search inputs
 	const heroInput = document.getElementById('omni-search-input')
@@ -1199,12 +1548,19 @@ export function handleOmniSearch(query) {
 
 	const q = query.toLowerCase()
 
-	// Thinking animation on search input shell
+	// Thinking animation on search input shell + 420ms skeleton shimmer
 	const inputShell = document.querySelector('.omni-search-input-shell')
-	if (inputShell) {
-		inputShell.classList.add('thinking')
-		setTimeout(() => inputShell.classList.remove('thinking'), 600)
-	}
+	const fullMenuGrid = document.getElementById('full-menu-grid')
+	const recSection = document.getElementById('recommendations-section')
+	const recGrid = document.getElementById('recommended-items-grid')
+
+	if (inputShell) inputShell.classList.add('thinking')
+	if (recSection) recSection.classList.remove('hidden')
+	renderShimmerCards(recGrid, 2)
+	renderShimmerCards(fullMenuGrid, 4)
+
+	await new Promise(resolve => setTimeout(resolve, 420))
+	if (inputShell) inputShell.classList.remove('thinking')
 
 	// Curate Recommendations based on natural language intent
 	let recommended = []
@@ -1215,43 +1571,59 @@ export function handleOmniSearch(query) {
 		recommended = [
 			{
 				...state.menuItems[0], // Mumbai Cutting Cold Brew
-				geminiReason: 'Low-acidic 18-hour cold brew infused with cardamom cut with almond milk is gentle on a sleepy stomach and awakens without caffeine jitters.'
+				geminiReason: 'Slow-steeped for 18 hours with green cardamom and almond milk — gentle on the stomach with a smooth lift.'
 			},
 			{
 				...state.menuItems[12], // Peri-Peri Cassava Crisps
-				geminiReason: 'Crispy golden cassava crisps with warm African peri-peri spices provide a crunchy, heat-forward balance to chilly monsoon rain.'
+				geminiReason: 'Warm peri-peri spiced cassava crisps bring a comforting crunch for a rainy Mumbai afternoon.'
 			}
 		]
-		answerText = `<p>For a <strong>sleepy, rainy Mumbai afternoon</strong>, we want gentle digestive comfort without a harsh caffeine crash. I selected our <strong>Mumbai Cutting Cold Brew</strong> (slow-steeped for 18h with warming cardamom, low-acidity) paired with <strong>Peri-Peri Cassava Crisps</strong> for a spicy crunch.</p>`
+		answerText = `For a <strong>sleepy, rainy Mumbai afternoon</strong>, our <strong>Mumbai Cutting Cold Brew</strong> (18-hour low-acid steep with green cardamom) paired with <strong>Peri-Peri Cassava Crisps</strong> gives you warmth and focus without a harsh caffeine spike.`
 	} else if (q.includes('burger') || q.includes('combo') || q.includes('600')) {
 		recommended = [
 			{
 				...state.menuItems[9], // BrewMesh Brioche Burger
-				geminiReason: 'Handcrafted spiced patty with smoked paprika relish and caramelized onions (₹380).'
+				geminiReason: 'Toasted butter brioche bun with spiced patty and smoked paprika relish (₹380).'
 			},
 			{
 				...state.menuItems[12], // Peri-Peri Cassava Crisps
-				geminiReason: 'Crunchy golden cassava crisps (₹160). Combo total is ₹540, well within your ₹600 budget!'
+				geminiReason: 'Crispy cassava chips (₹160) — brings your combo to ₹540, comfortably under ₹600.'
 			}
 		]
-		answerText = `<p>Here is your <strong>crispy burger &amp; chips combo under ₹600</strong>! The <strong>BrewMesh Brioche Burger (₹380)</strong> paired with our <strong>Peri-Peri Cassava Crisps (₹160)</strong> comes to exactly <strong>₹540</strong>, leaving you with ₹60 to spare.</p>`
-	} else if (q.includes('material science') || q.includes('assignment') || q.includes('meet') || q.includes('discoverable') || q.includes('who is')) {
+		answerText = `Here is a <strong>burger and crisps pairing under ₹600</strong>: our <strong>BrewMesh Brioche Burger (₹380)</strong> with <strong>Peri-Peri Cassava Crisps (₹160)</strong> comes to <strong>₹540</strong>.`
+	} else if (q.includes('game') || q.includes('catan') || q.includes('chess') || q.includes('play')) {
+		switchTab('games', false)
+		await renderGamesGrid('ALL', true)
+		return {
+			answer: 'Opened the board games lounge showing games on the cafe shelf and games brought by fellow guests.',
+			recommendationsCount: state.tableGames.length,
+			showPeople: true
+		}
+	} else if (q.includes('nearest') || q.includes('nearby') || q.includes('other cafe')) {
+		switchTab('cafes', false)
+		await renderNearbyCafesGrid(true)
+		return {
+			answer: 'Showing nearby specialty cafes with board games, signature drinks, and open tables.',
+			recommendationsCount: state.nearbyCafes.length,
+			showPeople: false
+		}
+	} else if (q.includes('material science') || q.includes('assignment') || q.includes('meet') || q.includes('discoverable') || q.includes('who is') || q.includes('chat')) {
 		showPeople = true
 		recommended = [
 			{
 				...state.menuItems[3], // Oat Milk Flat White
-				geminiReason: 'Smooth Ratnagiri single-origin espresso with silky oat foam—ideal fuel for focused deep work.'
+				geminiReason: 'Ratnagiri single-origin espresso with velvety oat microfoam — great company for focused work and table chats.'
 			}
 		]
-		answerText = `<p>You are working on a <strong>material science assignment</strong> and open to meeting people in the cafe! I’ve highlighted <strong>3 people currently discoverable at tables</strong> nearby who are also hacking on tech and reading. Send a wave below to say hi!</p>`
+		answerText = `You're working on a <strong>material science assignment</strong> and open to saying hello! We've updated your table status and highlighted <strong>3 guests nearby</strong> who are also open to chat.`
 	} else if (q.includes('reorder') || q.includes('usual') || q.includes('cold brew')) {
 		recommended = [
 			{
 				...state.menuItems[0],
-				geminiReason: 'Your usual order: Almond milk, unsweetened, with crushed cardamom.'
+				geminiReason: 'Your usual: Almond milk, unsweetened, with crushed green cardamom.'
 			}
 		]
-		answerText = `<p>Ready to reorder your usual <strong>Mumbai Cutting Cold Brew</strong>! With your saved customizations (Almond milk, Unsweetened), total is <strong>₹260</strong>. Click "Quick order" below to debit directly from your ₹${state.currentUser.walletBalance} wallet balance.</p>`
+		answerText = `Ready to pour your usual <strong>Mumbai Cutting Cold Brew</strong> (Almond milk, Unsweetened — <strong>₹260</strong>). Tap <strong>Quick order</strong> below to place it right from your wallet.`
 	} else {
 		// Generic keyword search
 		const matched = state.menuItems.filter(m =>
@@ -1262,17 +1634,18 @@ export function handleOmniSearch(query) {
 
 		recommended = (matched.length > 0 ? matched : state.menuItems.slice(0, 3)).map(item => ({
 			...item,
-			geminiReason: `Matched based on your inquiry "${query}".`
+			geminiReason: `Handpicked from our bar menu for "${query}" (~${item.prepTimeMinutes} min prep).`
 		}))
 
-		answerText = `<p>Here are the best matches for <strong>"${query}"</strong> from our Mumbai cafe menu. You can customize ingredients, milk, spice, or buns for every item.</p>`
+		answerText = `Here are our top picks for <strong>"${query}"</strong>. You can customize the milk, sweetness, bread, or spice level on any item.`
 	}
 
-	// Render AI Overview Card
+	// Render Barista Note Banner & legacy AI Overview Card
+	const conciergeTextEl = document.getElementById('concierge-summary-text')
+	if (conciergeTextEl) conciergeTextEl.innerHTML = answerText
+
 	const overviewTextEl = document.getElementById('gemini-overview-text')
-	if (overviewTextEl) {
-		overviewTextEl.innerHTML = answerText
-	}
+	if (overviewTextEl) overviewTextEl.innerHTML = answerText
 
 	// Proactive Table Connect Nudge
 	const nudgeEl = document.getElementById('overview-table-nudge')
@@ -1284,8 +1657,9 @@ export function handleOmniSearch(query) {
 		}
 	}
 
-	// Render Recommended Cards
+	// Render Recommended Cards & Full Menu
 	renderRecommendedGrid(recommended)
+	await renderFullMenu('All', '', false)
 
 	// Render People Snippets if relevant
 	const peopleSection = document.getElementById('people-snippets-section')
@@ -1316,24 +1690,28 @@ export function setAppMode(mode) {
 	const heroSlot = document.getElementById('hero-search-slot')
 	const headerSlot = document.getElementById('header-search-slot')
 	const searchForm = document.getElementById('omni-search-form')
+	const workspace = document.getElementById('workspace')
 
 	if (mode === 'results') {
+		if (workspace) workspace.classList.remove('hidden')
 		if (headerSlot && searchForm && !headerSlot.contains(searchForm)) {
 			headerSlot.appendChild(searchForm)
 		}
 	} else {
+		if (workspace) workspace.classList.add('hidden')
 		if (heroSlot && searchForm && !heroSlot.contains(searchForm)) {
 			heroSlot.appendChild(searchForm)
 		}
 	}
 }
 
-export function switchTab(tabName) {
-	state.activeTab = tabName
+export async function switchTab(tabName, withShimmerEffect = true) {
+	const resolvedTab = tabName === 'overview' ? 'menu' : (tabName === 'connect' ? 'games' : tabName)
+	state.activeTab = resolvedTab
 
 	// Update tab button styles
 	document.querySelectorAll('.nav-tab').forEach(tab => {
-		if (tab.dataset.tab === tabName) {
+		if (tab.dataset.tab === resolvedTab) {
 			tab.classList.add('active')
 		} else {
 			tab.classList.remove('active')
@@ -1343,7 +1721,7 @@ export function switchTab(tabName) {
 	const customerGrid = document.getElementById('customer-grid')
 	const ownerPortalView = document.getElementById('owner-portal-view')
 
-	if (tabName === 'owner') {
+	if (resolvedTab === 'owner') {
 		if (customerGrid) customerGrid.classList.add('hidden')
 		if (ownerPortalView) ownerPortalView.classList.remove('hidden')
 		renderOwnerPortal()
@@ -1352,12 +1730,20 @@ export function switchTab(tabName) {
 		if (ownerPortalView) ownerPortalView.classList.add('hidden')
 
 		document.querySelectorAll('.tab-content').forEach(content => {
-			if (content.dataset.view === tabName) {
+			if (content.dataset.view === resolvedTab) {
 				content.classList.remove('hidden')
 			} else {
 				content.classList.add('hidden')
 			}
 		})
+
+		if (resolvedTab === 'games') {
+			await renderGamesGrid(state.gameFilter, withShimmerEffect)
+		} else if (resolvedTab === 'cafes') {
+			await renderNearbyCafesGrid(withShimmerEffect)
+		} else if (resolvedTab === 'menu' && withShimmerEffect) {
+			await renderFullMenu('All', '', true)
+		}
 	}
 }
 
@@ -1371,7 +1757,7 @@ export function switchPersona(personaId) {
 	// If owner chosen, switch to Owner Tab
 	if (personaId === 'vikram') {
 		setAppMode('results')
-		switchTab('owner')
+		switchTab('owner', false)
 	}
 
 	renderWallet()
@@ -1380,16 +1766,18 @@ export function switchPersona(personaId) {
 	renderTableConnect()
 	renderOrders()
 
-	showToast(`Switched active persona to ${p.name}`, 'toast-info')
+	showToast(`Viewing cafe as ${p.name}`, 'toast-info')
 }
 
 // Wallet Rendering
 export function renderWallet() {
 	const headerWallet = document.getElementById('header-wallet-balance')
+	const walletText = document.getElementById('wallet-balance-text')
 	const sidebarWallet = document.getElementById('sidebar-wallet-number')
 
 	const formatted = state.currentUser.walletBalance.toLocaleString('en-IN')
 	if (headerWallet) headerWallet.textContent = formatted
+	if (walletText) walletText.textContent = formatted
 	if (sidebarWallet) sidebarWallet.textContent = `₹${formatted}`
 }
 
@@ -1410,10 +1798,10 @@ export function renderSidebarProfile() {
 
 	if (pillEl) {
 		if (state.currentUser.isDiscoverable) {
-			pillEl.textContent = 'Discoverable'
+			pillEl.textContent = 'Open to chat'
 			pillEl.className = 'discoverable-pill active'
 		} else {
-			pillEl.textContent = 'Hidden'
+			pillEl.textContent = 'Quiet mode'
 			pillEl.className = 'discoverable-pill'
 		}
 	}
@@ -1431,25 +1819,27 @@ export function renderHeroOptinCard() {
 	}
 }
 
-// Recommended Menu Items in AI Overview
+// Recommended Menu Items in Barista Note
 function renderRecommendedGrid(items) {
 	const grid = document.getElementById('recommended-items-grid')
+	const section = document.getElementById('recommendations-section')
 	if (!grid) return
+	if (section) section.classList.toggle('hidden', !items || items.length === 0)
 
 	grid.innerHTML = items.map(item => `
 		<article class="menu-card" data-item-id="${item.id}">
 			<div class="menu-card-top">
 				<div class="card-category-row">
-					<span class="card-category-badge">${item.category}</span>
+					<span class="card-category-badge">☕ ${item.category}</span>
 					<span class="card-stock-badge ${item.stock < 10 ? 'low-stock' : 'in-stock'}">
-						${item.stock > 0 ? `${item.stock} in stock` : 'Sold out'}
+						${item.stock > 0 ? `${item.stock} ready` : 'Sold out'}
 					</span>
 				</div>
 				<h3 class="card-item-title">${item.name}</h3>
 				<p class="card-item-desc">${item.description}</p>
 				${item.geminiReason ? `
 					<div class="card-gemini-reason">
-						<strong>✦ Why Gemini picked it for you:</strong> ${item.geminiReason}
+						<strong>☕ Barista's note:</strong> ${item.geminiReason}
 					</div>
 				` : ''}
 				<div class="card-sensory-tags">
@@ -1470,10 +1860,15 @@ function renderRecommendedGrid(items) {
 	`).join('')
 }
 
-// Full 14-Item Menu Grid
-export function renderFullMenu(category = 'All', filterQuery = '') {
+// Full 14-Item Menu Grid (With Optional 420ms Shimmer)
+export async function renderFullMenu(category = 'All', filterQuery = '', showShimmer = false) {
 	const grid = document.getElementById('full-menu-grid')
 	if (!grid) return
+
+	if (showShimmer) {
+		renderShimmerCards(grid, 4)
+		await new Promise(resolve => setTimeout(resolve, 420))
+	}
 
 	let filtered = state.menuItems
 	if (category && category !== 'All') {
@@ -1488,13 +1883,20 @@ export function renderFullMenu(category = 'All', filterQuery = '') {
 		)
 	}
 
+	const categoryIcon = (cat) => {
+		if (cat === 'Coffee') return '☕'
+		if (cat === 'Tea & Coolers') return '🧊'
+		if (cat === 'Burgers & Sandwiches') return '🥐'
+		return '🍟'
+	}
+
 	grid.innerHTML = filtered.map(item => `
 		<article class="menu-card" data-item-id="${item.id}">
 			<div class="menu-card-top">
 				<div class="card-category-row">
-					<span class="card-category-badge">${item.category}</span>
+					<span class="card-category-badge">${categoryIcon(item.category)} ${item.category}</span>
 					<span class="card-stock-badge ${item.stock === 0 ? 'sold-out' : (item.stock < 10 ? 'low-stock' : 'in-stock')}">
-						${item.stock > 0 ? `${item.stock} in stock` : 'Sold out'}
+						${item.stock > 0 ? `${item.stock} available` : 'Sold out'}
 					</span>
 				</div>
 				<h3 class="card-item-title">${item.name}</h3>
@@ -1509,9 +1911,171 @@ export function renderFullMenu(category = 'All', filterQuery = '') {
 					<span class="card-prep-time">~${item.prepTimeMinutes} min prep</span>
 				</div>
 				<div class="card-actions-group">
+					<button class="btn-quick-order" data-quick-order="${item.id}" ${item.stock === 0 ? 'disabled' : ''}>Quick order</button>
 					<button class="btn-customize-order" data-customize-item="${item.id}" ${item.stock === 0 ? 'disabled' : ''}>
-						${item.stock > 0 ? 'Customize &amp; order' : 'Out of stock'}
+						${item.stock > 0 ? 'Customize' : 'Out of stock'}
 					</button>
+				</div>
+			</div>
+		</article>
+	`).join('')
+}
+
+// Board Games Lounge & Table Games Pairing Grid (With 420ms Shimmer)
+export async function renderGamesGrid(sourceFilter = 'ALL', showShimmer = true) {
+	state.gameFilter = sourceFilter
+	const grid = document.getElementById('games-cards-grid')
+	if (!grid) return
+
+	if (showShimmer) {
+		renderShimmerCards(grid, 4)
+		try {
+			const [res] = await Promise.all([
+				fetch('/api/games').then(r => (r.ok ? r.json() : null)).catch(() => null),
+				new Promise(resolve => setTimeout(resolve, 420))
+			])
+			if (res && Array.isArray(res.games) && res.games.length > 0) {
+				state.tableGames = res.games
+			}
+		} catch {
+			// Use local state fallback
+		}
+	}
+
+	let games = [...state.tableGames]
+	if (sourceFilter && sourceFilter !== 'ALL') {
+		games = games.filter(g => g.source === sourceFilter)
+	}
+
+	grid.innerHTML = games.map(g => {
+		const isShelf = g.source === 'CAFE_SHELF'
+		const openSeats = Math.max(0, g.maxPlayers - g.currentPlayers)
+		return `
+			<article class="game-card" data-game-id="${g.id}">
+				<div>
+					<div class="game-card-header">
+						<span class="game-source-badge ${isShelf ? 'shelf' : 'guest'}">
+							${isShelf ? '☕ On cafe shelf' : '🎒 Brought by guest'}
+						</span>
+						<span class="game-seats-pill">
+							${g.lookingForPlayers && openSeats > 0 ? `${openSeats} seat${openSeats === 1 ? '' : 's'} open` : 'On shelf / Full'}
+						</span>
+					</div>
+					<h3 class="game-title">🎲 ${g.title}</h3>
+					<p class="game-meta-line">
+						${g.category} • ${g.tableNumber ? `Table ${g.tableNumber}` : 'Shelf copy'}
+						${g.hostName ? ` • Hosted by ${g.hostName}` : ''}
+					</p>
+				</div>
+				<p class="game-note">${g.note || 'Open for a friendly game over coffee!'}</p>
+				<div class="game-card-footer">
+					<span style="font-size:0.82rem;font-weight:600;color:var(--color-text-secondary)">
+						👥 ${g.currentPlayers}/${g.maxPlayers} players
+					</span>
+					${g.lookingForPlayers && openSeats > 0 ? `
+						<button class="btn-primary btn-sm" data-join-game="${g.id}">
+							Join at Table ${g.tableNumber || 4}
+						</button>
+					` : `
+						<button class="btn-secondary btn-sm" data-grab-shelf-game="${g.title}">
+							Host at my table
+						</button>
+					`}
+				</div>
+			</article>
+		`
+	}).join('')
+}
+
+// Nearby Cafes Finder Grid (With 420ms Shimmer)
+export async function renderNearbyCafesGrid(showShimmer = true) {
+	const grid = document.getElementById('nearby-cafes-grid')
+	const summaryBar = document.getElementById('nearby-summary-bar')
+	if (!grid) return
+
+	const search = document.getElementById('nearby-search-input')?.value?.trim() || ''
+	const game = document.getElementById('filter-cafe-game')?.value || ''
+	const craving = document.getElementById('filter-cafe-craving')?.value || ''
+	const chatOnly = document.getElementById('filter-cafe-chat-only')?.checked || false
+
+	if (showShimmer) {
+		renderShimmerCards(grid, 3)
+		const params = new URLSearchParams()
+		if (search) params.set('search', search)
+		if (game) params.set('game', game)
+		if (craving) params.set('craving', craving)
+		if (chatOnly) params.set('minChatPartners', '4')
+
+		try {
+			const [res] = await Promise.all([
+				fetch(`/api/cafes/nearby?${params.toString()}`).then(r => (r.ok ? r.json() : null)).catch(() => null),
+				new Promise(resolve => setTimeout(resolve, 420))
+			])
+			if (res && Array.isArray(res.cafes) && res.cafes.length > 0 && !search && !game && !craving && !chatOnly) {
+				state.nearbyCafes = res.cafes
+			}
+		} catch {
+			// Fallback to local state
+		}
+	}
+
+	const filteredResult = await executeToolAction('find_nearby_cafes', {
+		search: search || undefined,
+		game: game || undefined,
+		craving: craving || undefined,
+		minChatPartners: chatOnly ? 4 : undefined
+	})
+	const cafes = filteredResult.cafes || []
+
+	if (summaryBar) {
+		summaryBar.innerHTML = `<span>${filteredResult.summary}</span>`
+	}
+
+	if (cafes.length === 0) {
+		grid.innerHTML = `
+			<article class="knowledge-card" style="grid-column: 1 / -1; padding: 24px; text-align: center;">
+				<h3>No cafes match all those filters right now</h3>
+				<p style="color: var(--color-text-secondary); margin-top: 6px;">Try clearing the board game or craving filter to see all 5 nearby Mumbai locations.</p>
+			</article>
+		`
+		return
+	}
+
+	grid.innerHTML = cafes.map(c => `
+		<article class="nearby-cafe-card" data-cafe-id="${c.id}">
+			<div>
+				<div class="nearby-cafe-top">
+					<div>
+						<h3 class="nearby-cafe-name">☕ ${c.name}</h3>
+						<p class="nearby-cafe-hood">📍 ${c.neighborhood} • ${c.address}</p>
+					</div>
+					<span class="distance-pill">
+						${Number(c.distanceKm) === 0 ? 'Here now' : `${c.distanceKm} km • ~${c.walkOrDriveMins}m`}
+					</span>
+				</div>
+
+				<p style="font-size: 0.88rem; color: var(--color-text-primary); margin: 12px 0;">
+					${c.featuredBlurb}
+				</p>
+
+				<div class="nearby-stats-row">
+					<span class="nearby-stat-chip">⏳ ~${c.waitMins}m bar wait</span>
+					<span class="nearby-stat-chip">👋 ${c.openToChatCount} open to chat</span>
+					<span class="nearby-stat-chip">🎲 ${c.activeGameTables} game tables</span>
+				</div>
+			</div>
+
+			<div class="nearby-tags-group">
+				<span class="nearby-tags-label">🎲 Games on shelf &amp; tables</span>
+				<div class="nearby-tags-row">
+					${(c.availableGames || []).map(g => `<span class="sensory-tag">${g}</span>`).join('')}
+				</div>
+			</div>
+
+			<div class="nearby-tags-group">
+				<span class="nearby-tags-label">🥐 Popular drinks &amp; food</span>
+				<div class="nearby-tags-row">
+					${(c.signatureItems || []).map(s => `<span class="sensory-tag">${s}</span>`).join('')}
 				</div>
 			</div>
 		</article>
@@ -1565,7 +2129,7 @@ export function renderTableConnect() {
 
 				${p.icebreaker ? `
 					<div class="icebreaker-box">
-						<span class="icebreaker-label">✦ Suggested icebreaker</span>
+						<span class="icebreaker-label">💬 Conversation starter</span>
 						${p.icebreaker}
 					</div>
 				` : ''}
@@ -1733,7 +2297,7 @@ export function renderRoomVibes() {
 	feed.innerHTML = state.roomVibes.map(v => `
 		<div class="vibe-feed-item">
 			<div class="vibe-item-header">
-				<span class="vibe-item-sentiment">✦ ${v.sentiment}</span>
+				<span class="vibe-item-sentiment">☕ ${v.sentiment}</span>
 				<span class="vibe-item-time">${v.time}</span>
 			</div>
 			<p class="vibe-item-comment">"${v.comment}"</p>
@@ -2110,12 +2674,132 @@ function setupEventListeners() {
 		}
 	})
 
-	// Quick Action Chips
+	// Quick Action Chips (Search queries + direct tab triggers for Games, Chat, and Nearby Cafes)
 	document.getElementById('quick-chips-wrapper')?.addEventListener('click', (e) => {
 		const chip = e.target.closest('.quick-chip')
-		if (chip?.dataset.query) {
+		if (!chip) return
+		const action = chip.dataset.action
+		if (action === 'tab-games' || action === 'tab-connect') {
+			setAppMode('results')
+			switchTab('games', true)
+			return
+		}
+		if (action === 'tab-cafes') {
+			setAppMode('results')
+			switchTab('cafes', true)
+			return
+		}
+		if (chip.dataset.query) {
 			webMcpManager.callTool('omni_search_cafe', { query: chip.dataset.query, userId: state.currentUser.id })
 		}
+	})
+
+	// Barista Portal Button & Dialog
+	document.getElementById('barista-mode-btn')?.addEventListener('click', () => {
+		setAppMode('results')
+		switchTab('owner', false)
+	})
+	document.getElementById('btn-close-barista-dialog')?.addEventListener('click', () => {
+		document.getElementById('barista-dialog')?.close()
+	})
+	document.getElementById('btn-enter-barista-portal')?.addEventListener('click', () => {
+		document.getElementById('barista-dialog')?.close()
+		setAppMode('results')
+		switchTab('owner', false)
+	})
+
+	// Top-Up Dialog Support
+	document.getElementById('btn-close-topup')?.addEventListener('click', () => {
+		document.getElementById('topup-dialog')?.close()
+	})
+	document.querySelectorAll('.btn-preset-topup').forEach(btn => {
+		btn.addEventListener('click', () => {
+			document.querySelectorAll('.btn-preset-topup').forEach(b => b.classList.remove('active'))
+			btn.classList.add('active')
+			const input = document.getElementById('topup-custom-amount')
+			if (input) input.value = btn.dataset.amount || '2000'
+		})
+	})
+	document.getElementById('topup-form')?.addEventListener('submit', (e) => {
+		e.preventDefault()
+		const amount = Number(document.getElementById('topup-custom-amount')?.value) || 2000
+		webMcpManager.callTool('top_up_wallet', { userId: state.currentUser.id, amount })
+		document.getElementById('topup-dialog')?.close()
+	})
+
+	// Games Filter Pills (All games / On the cafe shelf / Brought by guests)
+	document.getElementById('games-filter-pills')?.addEventListener('click', (e) => {
+		const pill = e.target.closest('.filter-pill')
+		if (!pill) return
+		document.querySelectorAll('#games-filter-pills .filter-pill').forEach(p => p.classList.remove('active'))
+		pill.classList.add('active')
+		renderGamesGrid(pill.dataset.gameFilter || 'ALL', true)
+	})
+
+	// Host or Share a Game Modal
+	document.getElementById('btn-open-host-game')?.addEventListener('click', () => {
+		const dialog = document.getElementById('game-dialog')
+		if (dialog && typeof dialog.showModal === 'function') dialog.showModal()
+	})
+	document.getElementById('btn-close-game-dialog')?.addEventListener('click', () => {
+		document.getElementById('game-dialog')?.close()
+	})
+	document.getElementById('game-form')?.addEventListener('submit', (e) => {
+		e.preventDefault()
+		const source = document.getElementById('game-source-select')?.value || 'GUEST_BROUGHT'
+		const title = document.getElementById('game-title-input')?.value || 'Catan'
+		const category = document.getElementById('game-category-select')?.value || 'Strategy'
+		const tableRaw = document.getElementById('game-table-input')?.value || '4'
+		const maxPlayers = Number(document.getElementById('game-players-input')?.value) || 4
+		const note = document.getElementById('game-note-input')?.value || 'Beginners welcome — starting soon over coffee!'
+
+		webMcpManager.callTool('create_or_join_game', {
+			action: 'HOST',
+			userId: state.currentUser.id,
+			source,
+			title,
+			category,
+			tableNumber: Number(String(tableRaw).replace(/\D/g, '')) || 4,
+			maxPlayers,
+			note
+		})
+		document.getElementById('game-dialog')?.close()
+	})
+
+	// Join Game or Grab Shelf Game Buttons
+	document.addEventListener('click', (e) => {
+		const joinBtn = e.target.closest('[data-join-game]')
+		if (joinBtn) {
+			webMcpManager.callTool('create_or_join_game', {
+				action: 'JOIN',
+				gameId: joinBtn.dataset.joinGame,
+				userId: state.currentUser.id
+			})
+			return
+		}
+		const grabBtn = e.target.closest('[data-grab-shelf-game]')
+		if (grabBtn) {
+			const titleInput = document.getElementById('game-title-input')
+			const sourceSelect = document.getElementById('game-source-select')
+			if (titleInput) titleInput.value = grabBtn.dataset.grabShelfGame || 'Splendor'
+			if (sourceSelect) sourceSelect.value = 'CAFE_SHELF'
+			const dialog = document.getElementById('game-dialog')
+			if (dialog && typeof dialog.showModal === 'function') dialog.showModal()
+		}
+	})
+
+	// Nearby Cafes Filter Controls
+	document.getElementById('nearby-search-input')?.addEventListener('input', () => {
+		renderNearbyCafesGrid(false)
+	})
+	document.getElementById('filter-cafe-game')?.addEventListener('change', () => {
+		renderNearbyCafesGrid(true)
+	})
+	document.getElementById('filter-cafe-craving')?.addEventListener('change', () => {
+		renderNearbyCafesGrid(true)
+	})
+	document.getElementById('filter-cafe-chat-only')?.addEventListener('change', () => {
+		renderNearbyCafesGrid(true)
 	})
 
 	// Hero Table Connect Opt-In Form
@@ -2144,14 +2828,14 @@ function setupEventListeners() {
 		switchTab('connect')
 	})
 
-	// Menu Category Filter Pills
+	// Menu Category Filter Pills (with 420ms shimmer)
 	document.querySelector('.category-pills')?.addEventListener('click', (e) => {
 		const pill = e.target.closest('.category-pill')
 		if (pill) {
 			document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'))
 			pill.classList.add('active')
 			const input = document.getElementById('menu-filter-input')
-			renderFullMenu(pill.dataset.category, input?.value)
+			renderFullMenu(pill.dataset.category, input?.value, true)
 		}
 	})
 
@@ -2251,9 +2935,9 @@ function setupEventListeners() {
 		const responseEl = document.getElementById('owner-query-response')
 		if (input && responseEl) {
 			responseEl.classList.remove('hidden')
-			responseEl.innerHTML = '<em>✦ Analyzing Cloud SQL cafe metrics with Gemini 2.5 Flash...</em>'
+			responseEl.innerHTML = '<em>☕ Checking today’s cafe orders and room feedback...</em>'
 			const res = await webMcpManager.callTool('ask_owner_analytics', { question: input.value })
-			responseEl.innerHTML = `<strong>✦ Gemini Barista Analysis:</strong><br>${res.answer}`
+			responseEl.innerHTML = `<strong>☕ Barista Insights:</strong><br>${res.answer}`
 		}
 	})
 
@@ -2414,7 +3098,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 	renderWallet()
 	renderSidebarProfile()
 	renderHeroOptinCard()
-	renderFullMenu()
+	renderFullMenu('All', '', false)
+	renderGamesGrid('ALL', false)
+	renderNearbyCafesGrid(false)
 	renderTableConnect()
 	renderOrders()
 	renderIncomingWaves()

@@ -35,3 +35,13 @@ SELECT cafe.update_menu_stock(:itemId!, :stockDelta, :absoluteStock, :isAvailabl
 
 /* @name getOwnerDashboard */
 SELECT cafe.owner_dashboard_json() AS result;
+
+/* @name listTableGames */
+SELECT cafe.list_games_json(:source, :onlyLookingForPlayers) AS result;
+
+/* @name createOrJoinGame */
+SELECT cafe.create_or_join_game_json(:action, :gameId, :userId!, :title, :category, :source, :tableNumber, :maxPlayers, :note) AS result;
+
+/* @name findNearbyCafes */
+SELECT cafe.find_nearby_cafes_json(:search, :game, :craving, :minChatPartners) AS result;
+

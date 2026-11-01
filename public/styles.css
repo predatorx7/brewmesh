@@ -1,40 +1,41 @@
 /* ==========================================================================
 	 BrewMesh — Design System & Styles
-	 Theme: gemini.google.com Dark Theme & Google Search Layouts
+	 Theme: Warm Sunlit Specialty Coffee House Light Theme Only
 	 ========================================================================== */
 
 :root {
-	/* Canvas & Surfaces */
-	--color-canvas: #131314;
-	--color-surface-card: #1E1F20;
-	--color-surface-pill: #282A2C;
-	--color-surface-pill-hover: #333537;
-	--color-surface-elevated: #2A2B2D;
-	--color-surface-subtle: rgba(255, 255, 255, 0.04);
+	/* Canvas & Surfaces (Sunlit Oat Milk & Porcelain Light Theme) */
+	--color-canvas: #FAF6F0;
+	--color-surface-card: #FFFFFF;
+	--color-surface-pill: #F3ECE1;
+	--color-surface-pill-hover: #EAE0D2;
+	--color-surface-elevated: #F7F1E8;
+	--color-surface-subtle: rgba(44, 30, 24, 0.03);
 
 	/* Borders */
-	--color-border: #3C4043;
-	--color-border-subtle: rgba(255, 255, 255, 0.08);
-	--color-border-focus: #4285F4;
+	--color-border: #E6DDD0;
+	--color-border-subtle: rgba(44, 30, 24, 0.08);
+	--color-border-focus: #C25E2E;
 
-	/* Text Tokens (High Contrast WCAG AAA) */
-	--color-text-primary: #E3E3E3;
-	--color-text-secondary: #C4C7C5;
-	--color-text-muted: #8E918F;
-	--color-text-inverse: #131314;
+	/* Text Tokens (High Contrast Roasted Espresso & Walnut) */
+	--color-text-primary: #2C1E18;
+	--color-text-secondary: #655247;
+	--color-text-muted: #968377;
+	--color-text-inverse: #FFFFFF;
 
-	/* Gemini Accent & Gradients */
-	--gemini-gradient: linear-gradient(90deg, #4285F4 0%, #9B72CB 50%, #D96570 100%);
-	--gemini-gradient-subtle: linear-gradient(135deg, rgba(66, 133, 244, 0.12) 0%, rgba(155, 114, 203, 0.12) 50%, rgba(217, 101, 112, 0.12) 100%);
-	--gemini-gradient-glow: 0 0 24px rgba(155, 114, 203, 0.35);
-	--color-accent-blue: #4285F4;
-	--color-accent-purple: #9B72CB;
-	--color-accent-coral: #D96570;
-	--color-accent-green: #34A853;
-	--color-accent-amber: #FBBC04;
+	/* Artisanal Cafe Accents & Gradients */
+	--gemini-gradient: linear-gradient(90deg, #C25E2E 0%, #8C4A27 50%, #2E6F4E 100%);
+	--gemini-gradient-subtle: linear-gradient(135deg, rgba(194, 94, 46, 0.08) 0%, rgba(140, 74, 39, 0.08) 50%, rgba(46, 111, 78, 0.08) 100%);
+	--gemini-gradient-glow: 0 8px 24px rgba(44, 30, 24, 0.08);
+	--color-accent-blue: #C25E2E;
+	--color-accent-purple: #8C4A27;
+	--color-accent-coral: #B83B2B;
+	--color-accent-green: #2E6F4E;
+	--color-accent-amber: #C88219;
 
 	/* Typography */
-	--font-family-sans: 'Google Sans', 'Inter', system-ui, -apple-system, sans-serif;
+	--font-family-sans: 'DM Sans', 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+	--font-family-serif: 'Fraunces', Georgia, serif;
 	--font-family-mono: 'JetBrains Mono', monospace;
 
 	/* Transitions */
@@ -2981,3 +2982,578 @@ body[data-mode="home"] .results-main {
 		max-width: 100vw;
 	}
 }
+
+/* ==========================================================================
+	 Sunlit Specialty Cafe Light Theme Overrides, Cafe Illustrations,
+	 400ms+ Shimmer Skeletons, Board Games Lounge & Nearby Cafes Finder
+	 ========================================================================== */
+
+.app-header {
+	background-color: rgba(250, 246, 240, 0.94);
+	backdrop-filter: blur(12px);
+	border-bottom: 1px solid var(--color-border);
+}
+
+.brand-logo-img {
+	height: 38px;
+	width: auto;
+	display: block;
+}
+
+.vibe-pill,
+.queue-pill,
+.wallet-chip,
+.barista-mode-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 14px;
+	background-color: var(--color-surface-pill);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-full);
+	font-size: 0.85rem;
+	font-weight: 500;
+	color: var(--color-text-primary);
+}
+
+.barista-mode-btn:hover {
+	background-color: var(--color-surface-pill-hover);
+	border-color: var(--color-accent-blue);
+}
+
+.status-dot.green {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: var(--color-accent-green);
+	display: inline-block;
+}
+
+.hero-illustration-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.hero-cafe-illustration {
+	width: 100%;
+	max-width: 520px;
+	height: 185px;
+	object-fit: cover;
+	border-radius: 22px;
+	border: 1px solid var(--color-border);
+	box-shadow: 0 10px 30px rgba(44, 30, 24, 0.08);
+}
+
+.hero-illustration-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 5px 14px;
+	background-color: var(--color-surface-pill);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-full);
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--color-text-secondary);
+}
+
+.hero-title {
+	font-family: var(--font-family-serif);
+	color: var(--color-text-primary);
+	background: none;
+	-webkit-text-fill-color: var(--color-text-primary);
+}
+
+.omni-search-input-shell,
+.menu-card,
+.knowledge-card,
+.hero-table-optin-card,
+.concierge-banner,
+.connect-control-card,
+.person-card,
+.active-order-tracker-card,
+.kpi-card,
+.owner-gemini-card {
+	box-shadow: 0 6px 20px rgba(44, 30, 24, 0.06);
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+}
+
+/* 400ms+ Graceful Skeleton Shimmer */
+@keyframes cafeShimmer {
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
+}
+
+.shimmer-card {
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-height: 190px;
+	box-shadow: 0 4px 14px rgba(44, 30, 24, 0.04);
+}
+
+.shimmer-badge,
+.shimmer-title,
+.shimmer-line,
+.shimmer-footer {
+	background: linear-gradient(90deg, #F3ECE1 25%, #FAF6F0 50%, #F3ECE1 75%);
+	background-size: 200% 100%;
+	animation: cafeShimmer 1.2s infinite linear;
+	border-radius: 8px;
+}
+
+.shimmer-badge {
+	width: 90px;
+	height: 22px;
+	border-radius: 999px;
+}
+
+.shimmer-title {
+	width: 68%;
+	height: 24px;
+}
+
+.shimmer-line {
+	width: 94%;
+	height: 14px;
+}
+
+.shimmer-line.short {
+	width: 60%;
+}
+
+.shimmer-footer {
+	margin-top: auto;
+	width: 100%;
+	height: 36px;
+	border-radius: 10px;
+}
+
+/* Board Games Lounge & Table Games Pairing */
+.games-header-banner {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	gap: 20px;
+	align-items: center;
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: 18px;
+	margin-bottom: 20px;
+	box-shadow: 0 6px 20px rgba(44, 30, 24, 0.05);
+}
+
+.games-banner-img {
+	width: 100%;
+	height: 140px;
+	object-fit: cover;
+	border-radius: 14px;
+	border: 1px solid var(--color-border);
+}
+
+.games-banner-badge {
+	display: inline-block;
+	padding: 4px 12px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-surface-pill);
+	color: var(--color-accent-blue);
+	font-size: 0.78rem;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+
+.games-banner-title {
+	font-family: var(--font-family-serif);
+	font-size: 1.4rem;
+	color: var(--color-text-primary);
+	margin-bottom: 6px;
+}
+
+.games-banner-subtitle {
+	color: var(--color-text-secondary);
+	font-size: 0.92rem;
+}
+
+.games-management-card {
+	margin-bottom: 28px;
+}
+
+.games-controls-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.games-filter-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.filter-pill {
+	padding: 8px 16px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-surface-pill);
+	border: 1px solid var(--color-border);
+	color: var(--color-text-secondary);
+	font-size: 0.88rem;
+	font-weight: 600;
+}
+
+.filter-pill.active,
+.filter-pill:hover {
+	background-color: var(--color-accent-blue);
+	border-color: var(--color-accent-blue);
+	color: #FFFFFF;
+}
+
+.games-cards-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 16px;
+}
+
+.game-card {
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: 18px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 14px;
+	box-shadow: 0 6px 20px rgba(44, 30, 24, 0.05);
+}
+
+.game-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.game-source-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 10px;
+	border-radius: var(--radius-full);
+	font-size: 0.76rem;
+	font-weight: 700;
+}
+
+.game-source-badge.shelf {
+	background-color: rgba(46, 111, 78, 0.12);
+	color: var(--color-accent-green);
+}
+
+.game-source-badge.guest {
+	background-color: rgba(194, 94, 46, 0.12);
+	color: var(--color-accent-blue);
+}
+
+.game-seats-pill {
+	font-size: 0.78rem;
+	font-weight: 600;
+	padding: 3px 10px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-surface-pill);
+	color: var(--color-text-secondary);
+}
+
+.game-title {
+	font-family: var(--font-family-serif);
+	font-size: 1.15rem;
+	color: var(--color-text-primary);
+	margin-top: 6px;
+}
+
+.game-meta-line {
+	font-size: 0.84rem;
+	color: var(--color-text-secondary);
+	margin-top: 2px;
+}
+
+.game-note {
+	font-size: 0.88rem;
+	color: var(--color-text-primary);
+	background-color: var(--color-surface-elevated);
+	padding: 10px 12px;
+	border-radius: var(--radius-md);
+	border-left: 3px solid var(--color-accent-blue);
+}
+
+.game-card-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding-top: 8px;
+	border-top: 1px solid var(--color-border);
+}
+
+/* Nearby Cafes Finder */
+.nearby-cafes-header {
+	margin-bottom: 16px;
+}
+
+.nearby-filters-card {
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: 16px;
+	margin-bottom: 14px;
+	box-shadow: 0 4px 16px rgba(44, 30, 24, 0.04);
+}
+
+.nearby-search-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 12px;
+}
+
+.search-input-box {
+	flex: 1 1 240px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background-color: var(--color-surface-elevated);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: 8px 12px;
+}
+
+.filter-select-box {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.field-label-sm {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--color-text-secondary);
+}
+
+.field-select {
+	background-color: var(--color-surface-elevated);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: 8px 12px;
+	font-size: 0.88rem;
+	color: var(--color-text-primary);
+}
+
+.filter-toggle-box {
+	padding: 8px 12px;
+	background-color: var(--color-surface-elevated);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+}
+
+.chat-toggle-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.86rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.nearby-summary-bar {
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: var(--color-text-secondary);
+	margin-bottom: 14px;
+}
+
+.nearby-cafes-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+	gap: 16px;
+}
+
+.nearby-cafe-card {
+	background-color: var(--color-surface-card);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 14px;
+	box-shadow: 0 6px 20px rgba(44, 30, 24, 0.05);
+}
+
+.nearby-cafe-top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.nearby-cafe-name {
+	font-family: var(--font-family-serif);
+	font-size: 1.15rem;
+	color: var(--color-text-primary);
+}
+
+.nearby-cafe-hood {
+	font-size: 0.84rem;
+	color: var(--color-text-secondary);
+}
+
+.distance-pill {
+	padding: 4px 10px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-surface-pill);
+	color: var(--color-accent-blue);
+	font-size: 0.78rem;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.nearby-stats-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.nearby-stat-chip {
+	padding: 4px 10px;
+	border-radius: var(--radius-sm);
+	background-color: var(--color-surface-elevated);
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--color-text-primary);
+}
+
+.nearby-tags-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.nearby-tags-label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: var(--color-text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.nearby-tags-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.Concierge-banner,
+.concierge-banner {
+	padding: 18px 20px;
+	border-radius: var(--radius-lg);
+	margin-bottom: 18px;
+}
+
+.concierge-banner-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.concierge-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 700;
+	color: var(--color-accent-blue);
+}
+
+.concierge-roast-tag {
+	font-size: 0.78rem;
+	padding: 3px 10px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-surface-pill);
+	color: var(--color-text-secondary);
+}
+
+.concierge-summary-text {
+	color: var(--color-text-primary);
+	font-size: 0.96rem;
+	line-height: 1.55;
+}
+
+dialog.customizer-dialog {
+	margin: auto;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	background-color: var(--color-surface-card);
+	color: var(--color-text-primary);
+	max-width: 520px;
+	width: calc(100% - 32px);
+	box-shadow: 0 20px 50px rgba(44, 30, 24, 0.18);
+}
+
+dialog.customizer-dialog::backdrop {
+	background-color: rgba(44, 30, 24, 0.45);
+	backdrop-filter: blur(4px);
+}
+
+.form-field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 14px;
+}
+
+.form-row-2col {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.topup-preset-buttons {
+	display: flex;
+	gap: 10px;
+	margin: 12px 0 16px;
+}
+
+.btn-preset-topup {
+	flex: 1;
+	padding: 10px;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--color-border);
+	background-color: var(--color-surface-pill);
+	font-weight: 700;
+}
+
+.btn-preset-topup.active,
+.btn-preset-topup:hover {
+	background-color: var(--color-accent-blue);
+	color: #FFFFFF;
+	border-color: var(--color-accent-blue);
+}
+
+@media (max-width: 680px) {
+	.games-header-banner {
+		grid-template-columns: 1fr;
+	}
+}
+

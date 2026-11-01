@@ -47,6 +47,35 @@ END $$;
 
 DO $$
 BEGIN
+	CREATE DOMAIN cafe.short_text AS TEXT
+		CHECK (length(VALUE) <= 120);
+EXCEPTION
+	WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+	CREATE TYPE cafe.game_source AS ENUM (
+		'CAFE_SHELF',
+		'GUEST_BROUGHT'
+	);
+EXCEPTION
+	WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+	CREATE TYPE cafe.vibe_mode AS ENUM (
+		'DEEP_WORK',
+		'SOCIAL_BUZZ',
+		'COZY_RAIN'
+	);
+EXCEPTION
+	WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
 	CREATE TYPE cafe.user_role AS ENUM (
 		'customer',
 		'owner'
@@ -107,6 +136,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS cafe.users (
 	id cafe.user_handle PRIMARY KEY,
 	name TEXT NOT NULL,
+	display_name TEXT GENERATED ALWAYS AS (name) STORED,
 	role cafe.user_role NOT NULL DEFAULT 'customer',
 	avatar TEXT NOT NULL,
 	wallet_balance cafe.money_inr NOT NULL DEFAULT 1200,
@@ -166,6 +196,37 @@ CREATE TABLE IF NOT EXISTS cafe.room_vibes (
 	vibe cafe.vibe_rating NOT NULL,
 	comment cafe.short_blurb NOT NULL,
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS cafe.table_games (
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	title cafe.short_text NOT NULL,
+	category cafe.short_text NOT NULL DEFAULT 'Strategy',
+	source cafe.game_source NOT NULL DEFAULT 'CAFE_SHELF',
+	host_user_id cafe.user_handle REFERENCES cafe.users(id) ON DELETE SET NULL,
+	table_number INTEGER CHECK (table_number IS NULL OR (table_number >= 1 AND table_number <= 50)),
+	min_players INTEGER NOT NULL DEFAULT 2 CHECK (min_players >= 1 AND min_players <= 12),
+	max_players INTEGER NOT NULL DEFAULT 4 CHECK (max_players >= 1 AND max_players <= 20),
+	current_players INTEGER NOT NULL DEFAULT 1 CHECK (current_players >= 0 AND current_players <= 20),
+	looking_for_players BOOLEAN NOT NULL DEFAULT TRUE,
+	note TEXT,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS cafe.nearby_cafes (
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	name cafe.short_text NOT NULL,
+	neighborhood cafe.short_text NOT NULL,
+	address TEXT NOT NULL,
+	distance_km NUMERIC(4, 1) NOT NULL,
+	walk_or_drive_mins INTEGER NOT NULL,
+	vibe_mode cafe.vibe_mode NOT NULL DEFAULT 'SOCIAL_BUZZ',
+	wait_mins INTEGER NOT NULL DEFAULT 4,
+	open_to_chat_count INTEGER NOT NULL DEFAULT 3,
+	active_game_tables INTEGER NOT NULL DEFAULT 2,
+	available_games TEXT[] NOT NULL DEFAULT '{}',
+	signature_items TEXT[] NOT NULL DEFAULT '{}',
+	featured_blurb TEXT NOT NULL
 );
 
 -- JSON Serializer Functions
@@ -228,6 +289,50 @@ AS $$
 		'notes', o.notes,
 		'createdAt', to_char(o.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
 		'updatedAt', to_char(o.updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+	);
+$$;
+
+CREATE OR REPLACE FUNCTION cafe.table_game_json(g cafe.table_games, p_host_name TEXT DEFAULT NULL)
+RETURNS JSONB
+LANGUAGE sql
+STABLE
+AS $$
+	SELECT jsonb_build_object(
+		'id', g.id,
+		'title', g.title,
+		'category', g.category,
+		'source', g.source,
+		'hostUserId', g.host_user_id,
+		'hostName', p_host_name,
+		'tableNumber', g.table_number,
+		'minPlayers', g.min_players,
+		'maxPlayers', g.max_players,
+		'currentPlayers', g.current_players,
+		'lookingForPlayers', g.looking_for_players,
+		'note', g.note,
+		'createdAt', to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+	);
+$$;
+
+CREATE OR REPLACE FUNCTION cafe.nearby_cafe_json(c cafe.nearby_cafes)
+RETURNS JSONB
+LANGUAGE sql
+STABLE
+AS $$
+	SELECT jsonb_build_object(
+		'id', c.id,
+		'name', c.name,
+		'neighborhood', c.neighborhood,
+		'address', c.address,
+		'distanceKm', c.distance_km,
+		'walkOrDriveMins', c.walk_or_drive_mins,
+		'vibeMode', c.vibe_mode,
+		'waitMins', c.wait_mins,
+		'openToChatCount', c.open_to_chat_count,
+		'activeGameTables', c.active_game_tables,
+		'availableGames', to_jsonb(c.available_games),
+		'signatureItems', to_jsonb(c.signature_items),
+		'featuredBlurb', c.featured_blurb
 	);
 $$;
 
@@ -936,6 +1041,129 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION cafe.list_games_json(
+	p_source TEXT DEFAULT NULL,
+	p_only_looking BOOLEAN DEFAULT FALSE
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+	v_games JSONB;
+BEGIN
+	SELECT COALESCE(
+		jsonb_agg(
+			cafe.table_game_json(g, u.name)
+			ORDER BY g.looking_for_players DESC, g.created_at DESC
+		),
+		'[]'::jsonb
+	)
+	INTO v_games
+	FROM cafe.table_games g
+	LEFT JOIN cafe.users u ON u.id = g.host_user_id
+	WHERE (p_source IS NULL OR g.source::TEXT = p_source)
+	  AND (COALESCE(p_only_looking, FALSE) IS FALSE OR g.looking_for_players = TRUE);
+
+	RETURN jsonb_build_object('games', v_games);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION cafe.create_or_join_game_json(
+	p_action TEXT DEFAULT 'HOST',
+	p_game_id UUID DEFAULT NULL,
+	p_user_id TEXT DEFAULT NULL,
+	p_title TEXT DEFAULT NULL,
+	p_category TEXT DEFAULT NULL,
+	p_source TEXT DEFAULT NULL,
+	p_table_number INTEGER DEFAULT NULL,
+	p_max_players INTEGER DEFAULT NULL,
+	p_note TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+VOLATILE
+AS $$
+DECLARE
+	v_game cafe.table_games;
+	v_host_name TEXT;
+BEGIN
+	IF UPPER(COALESCE(p_action, 'HOST')) = 'JOIN' AND p_game_id IS NOT NULL THEN
+		UPDATE cafe.table_games
+		SET current_players = LEAST(max_players, current_players + 1),
+		    looking_for_players = CASE WHEN current_players + 1 >= max_players THEN FALSE ELSE TRUE END
+		WHERE id = p_game_id
+		RETURNING * INTO v_game;
+
+		IF v_game.id IS NULL THEN
+			RAISE EXCEPTION 'Game not found with ID %', p_game_id USING ERRCODE = 'P0002';
+		END IF;
+
+		SELECT name INTO v_host_name FROM cafe.users WHERE id = v_game.host_user_id;
+		RETURN jsonb_build_object('game', cafe.table_game_json(v_game, v_host_name));
+	ELSE
+		INSERT INTO cafe.table_games (
+			title,
+			category,
+			source,
+			host_user_id,
+			table_number,
+			min_players,
+			max_players,
+			current_players,
+			looking_for_players,
+			note
+		) VALUES (
+			COALESCE(p_title, 'Catan'),
+			COALESCE(p_category, 'Strategy'),
+			COALESCE(p_source, 'GUEST_BROUGHT')::cafe.game_source,
+			p_user_id,
+			COALESCE(p_table_number, 4),
+			2,
+			COALESCE(p_max_players, 4),
+			1,
+			TRUE,
+			COALESCE(p_note, 'Open for a friendly round at our table!')
+		)
+		RETURNING * INTO v_game;
+
+		SELECT name INTO v_host_name FROM cafe.users WHERE id = v_game.host_user_id;
+		RETURN jsonb_build_object('game', cafe.table_game_json(v_game, v_host_name));
+	END IF;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION cafe.find_nearby_cafes_json(
+	p_search TEXT DEFAULT NULL,
+	p_game TEXT DEFAULT NULL,
+	p_craving TEXT DEFAULT NULL,
+	p_min_chat INTEGER DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+	v_cafes JSONB;
+	v_count INTEGER;
+BEGIN
+	SELECT
+		COALESCE(jsonb_agg(cafe.nearby_cafe_json(c) ORDER BY c.distance_km ASC), '[]'::jsonb),
+		COUNT(*)
+	INTO v_cafes, v_count
+	FROM cafe.nearby_cafes c
+	WHERE (p_search IS NULL OR c.name ILIKE '%' || p_search || '%' OR c.neighborhood ILIKE '%' || p_search || '%' OR array_to_string(c.available_games, ' ') ILIKE '%' || p_search || '%' OR array_to_string(c.signature_items, ' ') ILIKE '%' || p_search || '%')
+	  AND (p_game IS NULL OR array_to_string(c.available_games, ' ') ILIKE '%' || p_game || '%')
+	  AND (p_craving IS NULL OR array_to_string(c.signature_items, ' ') ILIKE '%' || p_craving || '%')
+	  AND (p_min_chat IS NULL OR c.open_to_chat_count >= p_min_chat);
+
+	RETURN jsonb_build_object(
+		'cafes', v_cafes,
+		'summary', 'Found ' || v_count || ' nearby BrewMesh cafes matching your preferences.'
+	);
+END;
+$$;
+
 -- PGMB Real-Time Mutation Triggers
 DO $$
 BEGIN
@@ -945,6 +1173,8 @@ BEGIN
 		PERFORM pgmb.push_table_mutations('cafe.menu_items'::regclass);
 		PERFORM pgmb.push_table_mutations('cafe.table_waves'::regclass);
 		PERFORM pgmb.push_table_mutations('cafe.room_vibes'::regclass);
+		PERFORM pgmb.push_table_mutations('cafe.table_games'::regclass);
+		PERFORM pgmb.push_table_mutations('cafe.nearby_cafes'::regclass);
 	END IF;
 END $$;
 
@@ -1871,6 +2101,188 @@ BEGIN
 				'ananya',
 				'Good luck on the material science sprint! Let me know if you want a second pair of eyes.',
 				NOW() - INTERVAL '8 minutes'
+			);
+	END IF;
+END $$;
+
+-- Seed Table Games
+DO $$
+BEGIN
+	IF NOT EXISTS (SELECT 1 FROM cafe.table_games) THEN
+		INSERT INTO cafe.table_games (
+			title,
+			category,
+			source,
+			host_user_id,
+			table_number,
+			min_players,
+			max_players,
+			current_players,
+			looking_for_players,
+			note
+		) VALUES
+			(
+				'Catan',
+				'Strategy',
+				'CAFE_SHELF',
+				NULL,
+				4,
+				3,
+				4,
+				2,
+				TRUE,
+				'Cafe shelf copy at Table 4. Need 2 more players for a relaxed 45-minute game!'
+			),
+			(
+				'Ticket to Ride: India',
+				'Family Strategy',
+				'CAFE_SHELF',
+				NULL,
+				8,
+				2,
+				5,
+				3,
+				TRUE,
+				'Bandra route expansion on shelf. Quick rules teaching before train departs!'
+			),
+			(
+				'Splendor',
+				'Engine Building',
+				'CAFE_SHELF',
+				NULL,
+				2,
+				2,
+				4,
+				4,
+				FALSE,
+				'Full table playing gem development round at Table 2.'
+			),
+			(
+				'Codenames',
+				'Party / Word',
+				'CAFE_SHELF',
+				'zoya',
+				6,
+				4,
+				8,
+				5,
+				TRUE,
+				'Zoya pulled Codenames from the cafe shelf. Spies and spymasters welcome at Booth 6!'
+			),
+			(
+				'Azul',
+				'Tile Placement',
+				'GUEST_BROUGHT',
+				'ananya',
+				7,
+				2,
+				4,
+				3,
+				TRUE,
+				'Brought Azul from home — 1 seat open at Window Seat 2 if you enjoy pattern games and iced matcha.'
+			),
+			(
+				'Wingspan',
+				'Engine Building',
+				'GUEST_BROUGHT',
+				'kabir',
+				1,
+				1,
+				5,
+				2,
+				TRUE,
+				'Brought Wingspan with Oceania expansion! Relaxed bird-watching round at Community Table 1.'
+			);
+	END IF;
+END $$;
+
+-- Seed Nearby Cafes
+DO $$
+BEGIN
+	IF NOT EXISTS (SELECT 1 FROM cafe.nearby_cafes) THEN
+		INSERT INTO cafe.nearby_cafes (
+			name,
+			neighborhood,
+			address,
+			distance_km,
+			walk_or_drive_mins,
+			vibe_mode,
+			wait_mins,
+			open_to_chat_count,
+			active_game_tables,
+			available_games,
+			signature_items,
+			featured_blurb
+		) VALUES
+			(
+				'BrewMesh Bandra West (Flagship)',
+				'Bandra West',
+				'14 Chapel Road, Ranwar Village, Bandra West, Mumbai 400050',
+				0.0,
+				0,
+				'SOCIAL_BUZZ',
+				4,
+				5,
+				3,
+				ARRAY['Catan', 'Ticket to Ride: India', 'Splendor', 'Azul', 'Codenames', 'Wingspan'],
+				ARRAY['Malabar Cloud Cold Brew', 'Kokum Hibiscus Sparkler', 'Smoked Cinnamon Cortado'],
+				'Your current home base! Specialty pour-overs, high-speed mesh Wi-Fi, and active game tables.'
+			),
+			(
+				'Subko Coffee Roasters & Craft Bakehouse',
+				'Bandra West',
+				'251A, Perry Cross Rd, Bandra West, Mumbai 400050',
+				0.8,
+				10,
+				'SOCIAL_BUZZ',
+				12,
+				8,
+				2,
+				ARRAY['Chess', 'Scrabble', 'Hive'],
+				ARRAY['Podanur Estate Espresso', 'Salted Chocolate Sourdough Croissant', 'Cascara Tonic'],
+				'Vibrant specialty roastery set in a restored vintage cottage with sourdough pastries and lively community buzz.'
+			),
+			(
+				'Blue Tokai Coffee Roasters - Pali Hill',
+				'Bandra West',
+				'Plot 33, Pali Mala Road, Pali Hill, Mumbai 400050',
+				1.2,
+				15,
+				'DEEP_WORK',
+				5,
+				3,
+				1,
+				ARRAY['Backgammon', 'Monopoly Deal', 'Bananagrams'],
+				ARRAY['Riverdale Estate Pourover', 'Vietnamese Iced Coffee', 'Almond Croissant'],
+				'Quiet tree-lined hideaway ideal for long laptop sessions, clean pour-overs, and light acoustic background music.'
+			),
+			(
+				'Bombay Coffee House - Khar',
+				'Khar West',
+				'Plot 550, 14th Road, Khar West, Mumbai 400052',
+				2.1,
+				12,
+				'COZY_RAIN',
+				6,
+				4,
+				2,
+				ARRAY['Catan', 'Carcassonne', 'Jenga'],
+				ARRAY['Classic Filter Kaapi', 'Old Bombay Bun Maska', 'Cortado'],
+				'Old-world vintage charm meets modern third-wave brews with comfy armchairs and evening board game sessions.'
+			),
+			(
+				'Kala Ghoda Cafe',
+				'Fort / Kala Ghoda',
+				'10 Ropewalk Lane, Kala Ghoda, Fort, Mumbai 400001',
+				14.5,
+				35,
+				'COZY_RAIN',
+				8,
+				6,
+				2,
+				ARRAY['Ticket to Ride', 'Dixit', 'Chess'],
+				ARRAY['KGC Blend Cappuccino', 'Almond Marzipan Cake', 'Waffles with Honey'],
+				'Historic heritage art district favorite with brick walls, slow espresso, and creative art conversations.'
 			);
 	END IF;
 END $$;

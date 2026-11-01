@@ -11,10 +11,13 @@ import { LOGGER } from '../logger.ts';
 import { emitCafeEvent } from '../pgmb.ts';
 import {
 	advanceOrderStatus,
+	createOrJoinGame,
 	discoverTableConnect,
+	findNearbyCafes,
 	getOwnerDashboard,
 	getViewerContext,
 	listMenuItems,
+	listTableGames,
 	placeOrder,
 	sendTableWave,
 	setTableConnect,
@@ -331,6 +334,48 @@ export async function dispatchMcpTool(
 			const rows = await getOwnerDashboard.run({}, client);
 			const dashboard = formatOwnerDashboard(rows[0]?.result);
 			return runOwnerAnalyticsAi({ question, dashboard });
+		}
+
+		case 'list_games': {
+			const source = args.source || null;
+			const onlyLookingForPlayers = Boolean(args.onlyLookingForPlayers);
+			const rows = await listTableGames.run({ source, onlyLookingForPlayers }, client);
+			return rows[0]?.result ?? { games: [] };
+		}
+
+		case 'create_or_join_game': {
+			const rows = await createOrJoinGame.run(
+				{
+					action: args.action || 'HOST',
+					gameId: args.gameId || null,
+					userId: args.userId || 'syed',
+					title: args.title || null,
+					category: args.category || 'Strategy',
+					source: args.source || 'GUEST_BROUGHT',
+					tableNumber: Number(args.tableNumber) || 4,
+					maxPlayers: Number(args.maxPlayers) || 4,
+					note: args.note || null,
+				},
+				client,
+			);
+			const res = rows[0]?.result;
+			if (res?.game) {
+				emitCafeEvent('cafe.table_games.update', res.game);
+			}
+			return res;
+		}
+
+		case 'find_nearby_cafes': {
+			const rows = await findNearbyCafes.run(
+				{
+					search: args.search || null,
+					game: args.game || null,
+					craving: args.craving || null,
+					minChatPartners: args.minChatPartners ? Number(args.minChatPartners) : null,
+				},
+				client,
+			);
+			return rows[0]?.result ?? { cafes: [], summary: 'No matching cafes found nearby.' };
 		}
 
 		default:

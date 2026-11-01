@@ -200,6 +200,40 @@ describe('BrewMesh E2E Suite — Web UI API, OpenAPI Validation, Table Connect, 
 		assert.ok(Array.isArray(aiBody.actionItems) && aiBody.actionItems.length > 0);
 	});
 
+	it('lists cafe-shelf and guest-brought board games, hosts/joins games, and finds nearest cafes (GET/POST /api/games & GET /api/cafes/nearby)', async () => {
+		const gamesRes = await fetch(`${baseUrl}/api/games`);
+		assert.equal(gamesRes.status, 200);
+		const gamesBody = (await gamesRes.json()) as any;
+		assert.ok(Array.isArray(gamesBody.games) && gamesBody.games.length >= 5, 'Expected seeded cafe-shelf and guest-brought games');
+		const sources = new Set(gamesBody.games.map((g: any) => g.source));
+		assert.ok(sources.has('CAFE_SHELF') && sources.has('GUEST_BROUGHT'));
+
+		// Host a new game brought by guest
+		const hostRes = await fetch(`${baseUrl}/api/games`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				action: 'HOST',
+				userId: 'syed',
+				title: 'Carrom & Striker',
+				category: 'Classic',
+				source: 'GUEST_BROUGHT',
+				tableNumber: 4,
+				maxPlayers: 4,
+				note: 'Quick doubles Carrom match over cutting cold brew!',
+			}),
+		});
+		assert.equal(hostRes.status, 201);
+		const hostBody = (await hostRes.json()) as any;
+		assert.equal(hostBody.game.title, 'Carrom & Striker');
+
+		// Find nearby cafes offering Catan
+		const cafesRes = await fetch(`${baseUrl}/api/cafes/nearby?game=Catan`);
+		assert.equal(cafesRes.status, 200);
+		const cafesBody = (await cafesRes.json()) as any;
+		assert.ok(Array.isArray(cafesBody.cafes) && cafesBody.cafes.length >= 2);
+	});
+
 	it('executes MCP tools directly and over the /mcp Streamable HTTP endpoint', async () => {
 		const mcpResult = (await dispatchMcpTool(
 			'discover_table_connect',

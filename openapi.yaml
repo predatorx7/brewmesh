@@ -672,6 +672,143 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /api/games:
+    get:
+      summary: List cafe table games and player requests
+      description: List active board and card games available on the cafe shelf or brought by guests, with filters for source and open seats.
+      operationId: ListGames
+      tags:
+        - MCP
+        - Customer
+      x-mcp-description: List active board and tabletop games in the cafe. Filter by game source (CAFE_SHELF or GUEST_BROUGHT) and whether tables are actively looking for players.
+      x-mcp-annotations:
+        readOnlyHint: true
+        openWorldHint: false
+      parameters:
+        - name: source
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - CAFE_SHELF
+              - GUEST_BROUGHT
+          description: Filter games by source (CAFE_SHELF or GUEST_BROUGHT).
+        - name: onlyLookingForPlayers
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: When true, only return game tables actively looking for players.
+      responses:
+        '200':
+          description: List of cafe table games.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableGamesResponse'
+        '400':
+          description: Invalid query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Host a new game table or join an existing game
+      description: Create a new game table session or join an existing table looking for players.
+      operationId: CreateOrJoinGame
+      tags:
+        - MCP
+        - Customer
+      x-mcp-description: Host a new board game table session or join an existing game table looking for players at BrewMesh.
+      x-mcp-annotations:
+        destructiveHint: false
+        idempotentHint: false
+        openWorldHint: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrJoinGameRequest'
+      responses:
+        '200':
+          description: Game session updated or created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrJoinGameResponse'
+        '201':
+          description: New game session created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrJoinGameResponse'
+        '400':
+          description: Invalid game payload or missing required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/cafes/nearby:
+    get:
+      summary: Discover nearby partner cafes and game hubs
+      description: Find nearby Mumbai partner cafes matching search keywords, board games, cravings, or minimum social chat partners.
+      operationId: FindNearbyCafes
+      tags:
+        - MCP
+        - Customer
+      x-mcp-description: Find nearby specialty cafes and game hubs across Mumbai. Filter by search term, specific board game, craving, or open-to-chat community count.
+      x-mcp-annotations:
+        readOnlyHint: true
+        openWorldHint: false
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 100
+          description: Free-text search matching cafe name, neighborhood, available games, or signature items.
+        - name: game
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+          description: Filter cafes having a specific board game available (e.g. Catan, Chess, Ticket to Ride).
+        - name: craving
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 80
+          description: Filter cafes serving a specific drink or food craving (e.g. Pour-Over, Croissant, Matcha).
+        - name: minChatPartners
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+          description: Minimum count of guests currently open to conversation on Table Connect.
+      responses:
+        '200':
+          description: List of nearby cafes and matching summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NearbyCafesResponse'
+        '400':
+          description: Invalid search parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/events:
     get:
       summary: Subscribe to live cafe mutation events
@@ -1308,6 +1445,216 @@ components:
         dominantRoomVibe:
           type: string
           description: Prevailing customer sentiment in the cafe.
+
+    TableGame:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - title
+        - category
+        - source
+        - minPlayers
+        - maxPlayers
+        - currentPlayers
+        - lookingForPlayers
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique board game session or shelf item identifier.
+        title:
+          type: string
+          description: Title of the board game or tabletop game.
+        category:
+          type: string
+          description: Game genre or category.
+        source:
+          type: string
+          enum:
+            - CAFE_SHELF
+            - GUEST_BROUGHT
+          description: Whether the game is provided by the cafe or brought by a guest.
+        hostUserId:
+          type: string
+          nullable: true
+          description: User handle of the guest hosting the table game, if any.
+        hostName:
+          type: string
+          nullable: true
+          description: Display name of the guest hosting the game, if any.
+        tableNumber:
+          type: integer
+          nullable: true
+          description: Table number where the game is set up.
+        minPlayers:
+          type: integer
+          description: Minimum players recommended.
+        maxPlayers:
+          type: integer
+          description: Maximum players supported.
+        currentPlayers:
+          type: integer
+          description: Current number of players seated at the game table.
+        lookingForPlayers:
+          type: boolean
+          description: Whether the table is open to more players joining right now.
+        note:
+          type: string
+          nullable: true
+          description: Friendly note about the game session or rules.
+        createdAt:
+          type: string
+          description: ISO timestamp when the game was listed.
+
+    TableGamesResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - games
+      properties:
+        games:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/TableGame'
+
+    CreateOrJoinGameRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - userId
+      properties:
+        action:
+          type: string
+          enum:
+            - HOST
+            - JOIN
+          default: HOST
+          description: Whether to host a new game table or join an existing game.
+        gameId:
+          type: string
+          description: Existing game UUID when action is JOIN.
+        userId:
+          type: string
+          default: syed
+          description: User handle hosting or joining the game.
+        title:
+          type: string
+          description: Name of the board game when hosting.
+        category:
+          type: string
+          default: Strategy
+          description: Category of the game when hosting.
+        source:
+          type: string
+          enum:
+            - CAFE_SHELF
+            - GUEST_BROUGHT
+          default: GUEST_BROUGHT
+          description: Whether the game is from the cafe shelf or brought by the guest.
+        tableNumber:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 4
+          description: Table number where the game is hosted.
+        maxPlayers:
+          type: integer
+          minimum: 2
+          maximum: 12
+          default: 4
+          description: Maximum players for the session.
+        note:
+          type: string
+          description: Optional invite note for other players in the cafe.
+
+    CreateOrJoinGameResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - game
+      properties:
+        game:
+          $ref: '#/components/schemas/TableGame'
+
+    NearbyCafe:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - neighborhood
+        - address
+        - distanceKm
+        - walkOrDriveMins
+        - vibeMode
+        - waitMins
+        - openToChatCount
+        - activeGameTables
+        - availableGames
+        - signatureItems
+        - featuredBlurb
+      properties:
+        id:
+          type: string
+          description: Unique cafe location identifier.
+        name:
+          type: string
+          description: Name of the cafe location.
+        neighborhood:
+          type: string
+          description: Mumbai neighborhood.
+        address:
+          type: string
+          description: Street address.
+        distanceKm:
+          type: number
+          description: Distance from current location in kilometers.
+        walkOrDriveMins:
+          type: integer
+          description: Estimated travel time in minutes.
+        vibeMode:
+          type: string
+          description: Current room atmosphere mode.
+        waitMins:
+          type: integer
+          description: Current espresso bar wait time in minutes.
+        openToChatCount:
+          type: integer
+          description: Number of guests currently open to chat on Table Connect.
+        activeGameTables:
+          type: integer
+          description: Number of active board game tables.
+        availableGames:
+          type: array
+          items:
+            type: string
+          description: Board games available at this cafe.
+        signatureItems:
+          type: array
+          items:
+            type: string
+          description: Signature drinks and food items at this cafe.
+        featuredBlurb:
+          type: string
+          description: Short highlight of the cafe atmosphere and offerings.
+
+    NearbyCafesResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - cafes
+        - summary
+      properties:
+        cafes:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/NearbyCafe'
+        summary:
+          type: string
+          description: Human-readable summary of matching nearby cafes.
 
     ErrorResponse:
       type: object

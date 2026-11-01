@@ -1,12 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" fill="none">
 	<defs>
-		<linearGradient id="brewmesh-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-			<stop offset="0%" stop-color="#4285F4" />
-			<stop offset="52%" stop-color="#9B72CB" />
-			<stop offset="100%" stop-color="#D96570" />
+		<linearGradient id="warm-roast-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#C25E2E" />
+			<stop offset="100%" stop-color="#9B3B18" />
 		</linearGradient>
 	</defs>
-	<path d="M32 6C32 18.5 41.5 28 54 28C41.5 28 32 37.5 32 50C32 37.5 22.5 28 10 28C22.5 28 32 18.5 32 6Z" fill="url(#brewmesh-grad)" />
-	<path d="M18 52H46C46 55.866 42.866 59 39 59H25C21.134 59 18 55.866 18 52Z" fill="url(#brewmesh-grad)" opacity="0.85" />
-	<text x="66" y="42" fill="#E3E3E3" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="30" font-weight="600" letter-spacing="-0.5">BrewMesh</text>
+	<!-- Artisanal Specialty Coffee Cup -->
+	<g transform="translate(6, 4)">
+		<!-- Saucer -->
+		<path d="M8 48 C16 52, 38 52, 46 48 C48 47, 49 49, 47 50.5 C39 55, 15 55, 7 50.5 C5 49, 6 47, 8 48 Z" fill="#968377" />
+		<!-- Cup Body -->
+		<path d="M12 22 H42 C42 35, 37 45, 27 45 C17 45, 12 35, 12 22 Z" fill="url(#warm-roast-grad)" />
+		<!-- Cup Inner Shadow / Crema Rim -->
+		<ellipse cx="27" cy="22" rx="15" ry="3.5" fill="#FAF6F0" />
+		<ellipse cx="27" cy="22" rx="13" ry="2.5" fill="#583526" />
+		<!-- Cup Handle -->
+		<path d="M41 26 C48 26, 49 37, 40 39" stroke="url(#warm-roast-grad)" stroke-width="3.5" stroke-linecap="round" fill="none" />
+		<!-- Rising Steam -->
+		<path d="M22 17 C20 13, 24 10, 22 5" stroke="#C88219" stroke-width="2.2" stroke-linecap="round" fill="none" />
+		<path d="M30 16 C33 12, 29 9, 32 4" stroke="#C25E2E" stroke-width="2.2" stroke-linecap="round" fill="none" />
+		<!-- Delicate Coffee Leaf -->
+		<path d="M36 10 C42 6, 47 7, 47 12 C47 17, 41 16, 36 10 Z" fill="#2E6F4E" />
+		<path d="M37 11 Q 42 12 46 12" stroke="#FAF6F0" stroke-width="0.8" stroke-linecap="round" fill="none" />
+	</g>
+	<!-- Brand Typography -->
+	<text x="68" y="37" fill="#2C1E18" font-family="'Fraunces', 'Plus Jakarta Sans', system-ui, sans-serif" font-size="28" font-weight="700" letter-spacing="-0.5">Brew<tspan fill="#C25E2E">Mesh</tspan></text>
+	<text x="70" y="51" fill="#968377" font-family="'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" font-size="9" font-weight="600" letter-spacing="2.2">SPECIALTY CAFE &amp; SOCIAL</text>
 </svg>

@@ -252,6 +252,39 @@ export interface IGetOwnerDashboardResult {
 	result: OwnerDashboard;
 }
 
+export interface IListTableGamesParams {
+	source?: string | null;
+	onlyLookingForPlayers?: boolean | null;
+}
+export interface IListTableGamesResult {
+	result: { games: any[] };
+}
+
+export interface ICreateOrJoinGameParams {
+	action?: string | null;
+	gameId?: string | null;
+	userId: string;
+	title?: string | null;
+	category?: string | null;
+	source?: string | null;
+	tableNumber?: number | null;
+	maxPlayers?: number | null;
+	note?: string | null;
+}
+export interface ICreateOrJoinGameResult {
+	result: { game: any };
+}
+
+export interface IFindNearbyCafesParams {
+	search?: string | null;
+	game?: string | null;
+	craving?: string | null;
+	minChatPartners?: number | null;
+}
+export interface IFindNearbyCafesResult {
+	result: { cafes: any[]; summary: string };
+}
+
 const getViewerContextIR: any = {
 	"usedParamSet": {
 		"userId": true
@@ -795,3 +828,255 @@ const getOwnerDashboardIR: any = {
  * For example: const [row] = await getOwnerDashboard.run(params, client);
  */
 export const getOwnerDashboard = new PreparedQuery<IGetOwnerDashboardParams, IGetOwnerDashboardResult>(getOwnerDashboardIR);
+
+const listTableGamesIR: any = {
+	"usedParamSet": {
+		"source": true,
+		"onlyLookingForPlayers": true
+	},
+	"params": [
+		{
+			"name": "source",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 28,
+					"b": 34
+				}
+			]
+		},
+		{
+			"name": "onlyLookingForPlayers",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 37,
+					"b": 58
+				}
+			]
+		}
+	],
+	"statement": "SELECT cafe.list_games_json(:source, :onlyLookingForPlayers) AS result"
+};
+
+/**
+ * Execute listTableGames query.
+ * For example: const [row] = await listTableGames.run(params, client);
+ */
+export const listTableGames = new PreparedQuery<IListTableGamesParams, IListTableGamesResult>(listTableGamesIR);
+
+const createOrJoinGameIR: any = {
+	"usedParamSet": {
+		"action": true,
+		"gameId": true,
+		"userId": true,
+		"title": true,
+		"category": true,
+		"source": true,
+		"tableNumber": true,
+		"maxPlayers": true,
+		"note": true
+	},
+	"params": [
+		{
+			"name": "action",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 37,
+					"b": 43
+				}
+			]
+		},
+		{
+			"name": "gameId",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 46,
+					"b": 52
+				}
+			]
+		},
+		{
+			"name": "userId",
+			"required": true,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 55,
+					"b": 62
+				}
+			]
+		},
+		{
+			"name": "title",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 65,
+					"b": 70
+				}
+			]
+		},
+		{
+			"name": "category",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 73,
+					"b": 81
+				}
+			]
+		},
+		{
+			"name": "source",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 84,
+					"b": 90
+				}
+			]
+		},
+		{
+			"name": "tableNumber",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 93,
+					"b": 104
+				}
+			]
+		},
+		{
+			"name": "maxPlayers",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 107,
+					"b": 117
+				}
+			]
+		},
+		{
+			"name": "note",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 120,
+					"b": 124
+				}
+			]
+		}
+	],
+	"statement": "SELECT cafe.create_or_join_game_json(:action, :gameId, :userId!, :title, :category, :source, :tableNumber, :maxPlayers, :note) AS result"
+};
+
+/**
+ * Execute createOrJoinGame query.
+ * For example: const [row] = await createOrJoinGame.run(params, client);
+ */
+export const createOrJoinGame = new PreparedQuery<ICreateOrJoinGameParams, ICreateOrJoinGameResult>(createOrJoinGameIR);
+
+const findNearbyCafesIR: any = {
+	"usedParamSet": {
+		"search": true,
+		"game": true,
+		"craving": true,
+		"minChatPartners": true
+	},
+	"params": [
+		{
+			"name": "search",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 35,
+					"b": 41
+				}
+			]
+		},
+		{
+			"name": "game",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 44,
+					"b": 48
+				}
+			]
+		},
+		{
+			"name": "craving",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 51,
+					"b": 58
+				}
+			]
+		},
+		{
+			"name": "minChatPartners",
+			"required": false,
+			"transform": {
+				"type": "scalar"
+			},
+			"locs": [
+				{
+					"a": 61,
+					"b": 76
+				}
+			]
+		}
+	],
+	"statement": "SELECT cafe.find_nearby_cafes_json(:search, :game, :craving, :minChatPartners) AS result"
+};
+
+/**
+ * Execute findNearbyCafes query.
+ * For example: const [row] = await findNearbyCafes.run(params, client);
+ */
+export const findNearbyCafes = new PreparedQuery<IFindNearbyCafesParams, IFindNearbyCafesResult>(findNearbyCafesIR);

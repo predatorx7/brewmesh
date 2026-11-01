@@ -308,6 +308,39 @@ export function generateQueries(): void {
 		'export interface IGetOwnerDashboardResult {',
 		'\tresult: OwnerDashboard;',
 		'}',
+		'',
+		'export interface IListTableGamesParams {',
+		'\tsource?: string | null;',
+		'\tonlyLookingForPlayers?: boolean | null;',
+		'}',
+		'export interface IListTableGamesResult {',
+		'\tresult: { games: any[] };',
+		'}',
+		'',
+		'export interface ICreateOrJoinGameParams {',
+		'\taction?: string | null;',
+		'\tgameId?: string | null;',
+		'\tuserId: string;',
+		'\ttitle?: string | null;',
+		'\tcategory?: string | null;',
+		'\tsource?: string | null;',
+		'\ttableNumber?: number | null;',
+		'\tmaxPlayers?: number | null;',
+		'\tnote?: string | null;',
+		'}',
+		'export interface ICreateOrJoinGameResult {',
+		'\tresult: { game: any };',
+		'}',
+		'',
+		'export interface IFindNearbyCafesParams {',
+		'\tsearch?: string | null;',
+		'\tgame?: string | null;',
+		'\tcraving?: string | null;',
+		'\tminChatPartners?: number | null;',
+		'}',
+		'export interface IFindNearbyCafesResult {',
+		'\tresult: { cafes: any[]; summary: string };',
+		'}',
 		''
 	);
 
@@ -323,7 +356,10 @@ export function generateQueries(): void {
 		'submitRoomVibe',
 		'advanceOrderStatus',
 		'updateMenuStock',
-		'getOwnerDashboard'
+		'getOwnerDashboard',
+		'listTableGames',
+		'createOrJoinGame',
+		'findNearbyCafes'
 	];
 
 	for (const name of queryNames) {

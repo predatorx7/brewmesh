@@ -1,14 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
 	<defs>
-		<linearGradient id="gemini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-			<stop offset="0%" stop-color="#4285F4" />
-			<stop offset="50%" stop-color="#9B72CB" />
-			<stop offset="100%" stop-color="#D96570" />
+		<linearGradient id="fav-cup-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+			<stop offset="0%" stop-color="#C25E2E" />
+			<stop offset="100%" stop-color="#9B3B18" />
 		</linearGradient>
 	</defs>
-	<rect width="64" height="64" rx="16" fill="#131314" />
-	<!-- Gemini four-point sparkle combined with a craft coffee cup silhouette -->
-	<path d="M32 8C32 19.5 40.5 28 52 28C40.5 28 32 36.5 32 48C32 36.5 23.5 28 12 28C23.5 28 32 19.5 32 8Z" fill="url(#gemini-grad)" />
-	<circle cx="48" cy="14" r="3" fill="#D96570" />
-	<path d="M20 49H44C44 53.4183 40.4183 57 36 57H28C23.5817 57 20 53.4183 20 49Z" fill="url(#gemini-grad)" opacity="0.85" />
+	<rect width="64" height="64" rx="16" fill="#FAF6F0" />
+	<rect x="0.5" y="0.5" width="63" height="63" rx="15.5" stroke="#E6DDD0" stroke-width="1" />
+	<!-- Saucer -->
+	<path d="M14 49 C22 53, 42 53, 50 49 C51 48.5, 52 50, 50 51.5 C42 56, 22 56, 14 51.5 C12 50, 13 48.5, 14 49 Z" fill="#968377" />
+	<!-- Cup Body -->
+	<path d="M16 26 H46 C46 39, 41 47, 31 47 C21 47, 16 39, 16 26 Z" fill="url(#fav-cup-grad)" />
+	<!-- Cup Rim / Crema -->
+	<ellipse cx="31" cy="26" rx="15" ry="3.5" fill="#583526" />
+	<ellipse cx="31" cy="26" rx="12" ry="2.2" fill="#FAF6F0" opacity="0.3" />
+	<!-- Cup Handle -->
+	<path d="M45 29 C52 29, 53 39, 44 41" stroke="url(#fav-cup-grad)" stroke-width="3.5" stroke-linecap="round" fill="none" />
+	<!-- Rising Steam -->
+	<path d="M26 21 C24 16, 28 13, 26 8" stroke="#C88219" stroke-width="2.4" stroke-linecap="round" fill="none" />
+	<path d="M34 20 C37 15, 33 12, 36 7" stroke="#C25E2E" stroke-width="2.4" stroke-linecap="round" fill="none" />
+	<!-- Coffee Leaf -->
+	<path d="M41 14 C47 9, 53 10, 53 16 C53 21, 46 20, 41 14 Z" fill="#2E6F4E" />
+	<path d="M42 15 Q 47 16 52 16" stroke="#FAF6F0" stroke-width="0.8" stroke-linecap="round" fill="none" />
 </svg>
